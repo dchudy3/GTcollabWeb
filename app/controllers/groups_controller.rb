@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: [:show, :edit, :update, :destroy]
+  before_action :set_group, only: [:show, :edit, :update]
 
   # GET /groups
   # GET /groups.json
@@ -13,8 +13,36 @@ class GroupsController < ApplicationController
   end
 
   # GET /groups/new
+
+  # curl --request POST \
+  # --url 'https://secure-headland-60131.herokuapp.com/api/groups/612/leave/' \
+  # --header 'authorization: Token 159a73e1414173ac5f7ba14786253d45870a51df '
+
+
   def new
-    @group = Group.new
+    puts "in add"
+    id =  params[:format]
+    line = "https://secure-headland-60131.herokuapp.com/api/groups/" + id + "/join/"
+    puts line
+    puts $token
+
+    require "net/http"
+    require "uri"
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    response.inspect
+
+    puts response.body
+    redirect_to courses_path
   end
 
   # GET /groups/1/edit
@@ -54,11 +82,30 @@ class GroupsController < ApplicationController
   # DELETE /groups/1
   # DELETE /groups/1.json
   def destroy
-    @group.destroy
-    respond_to do |format|
-      format.html { redirect_to groups_url, notice: 'Group was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    require "net/http"
+    require "uri"
+
+    id =  params[:id]
+    line = "https://secure-headland-60131.herokuapp.com/api/groups/" + id + "/leave/"
+    puts line
+    puts $token
+
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    # p "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+    # p response.inspect
+
+    # puts response.body
+    redirect_to courses_path
   end
 
   private

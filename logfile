@@ -5,3 +5,7 @@ LOG:  autovacuum launcher started
 FATAL:  database "Dan" does not exist
 FATAL:  database "Dan" does not exist
 FATAL:  database "Dan" does not exist
+LOG:  autovacuum launcher shutting down
+LOG:  received smart shutdown request
+LOG:  shutting down
+LOG:  database system is shut down

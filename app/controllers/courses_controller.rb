@@ -24,8 +24,7 @@ class CoursesController < ApplicationController
     @courses = Hash.new
     @mycourses = Hash.new
 
-
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: "Token ae58c6766f9152f8ffe0a143382f4121fbf6e3cb"}
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |result|
@@ -37,9 +36,9 @@ class CoursesController < ApplicationController
       @courses[hash["id"]] = hash
     end
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=1000', {authorization: "Token ae58c6766f9152f8ffe0a143382f4121fbf6e3cb"}
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-
+    puts objArray
     objArray["results"].each do |result|
       course = Course.new
       course.name = result["name"]
@@ -60,32 +59,122 @@ class CoursesController < ApplicationController
 
   #/api/courses/:id
   def show 
-    @course = Hash.new
-    course = Course.new
-    course.name = 'burrito'
-    course.id = "7"
-    hash = course.as_json
-
-
-    @course[hash["id"]] = hash
-
+    puts params
+    course_id = params[:id]
     @mygroups = Hash.new
     @groups = Hash.new
 
     @mymeetings = Hash.new
     @meetings = Hash.new
+
+    ##### COURSE DATA #############
+    @course = Course.new
+    @course.id = params[:id]
+    @course.name = params[:name]
+    #################################
+
+    ############# MEETING DATA ##################
+
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p objArray["results"]
+    objArray["results"].each do |result|
+      meeting = Meeting.new
+
+      meeting.name = result["name"]
+      meeting.id = result["id"]
+      meeting.location = result["location"]
+      meeting.description = result["description"]
+      meeting.start_date = result["start_date"]
+      meeting.start_time = result["start_time"]
+      meeting.duration = result["duration"]
+      hash = meeting.as_json
+
+      @mymeetings[hash["id"]] = hash
+    end
+
+
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=' + course_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+
+    objArray["results"].each do |result|
+      meeting = Meeting.new
+
+      meeting.name = result["name"]
+      meeting.id = result["id"]
+      meeting.location = result["location"]
+      meeting.description = result["description"]
+      meeting.start_date = result["start_date"]
+      meeting.start_time = result["start_time"]
+      meeting.duration = result["duration"]
+      hash = meeting.as_json
+
+      @meetings[hash["id"]] = hash
+    end
+    ###########################################
+
+    ############# Group DATA ##################
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups?course=' + course_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p objArray["results"]
+    objArray["results"].each do |result|
+      group = Group.new
+
+      group.name = result["name"]
+      group.id = result["id"]
+      group.creater_fname = result["creator"]["first_name"]
+      group.creater_lname = result["creator"]["last_name"]
+      hash = group.as_json
+
+      @groups[hash["id"]] = hash
+    end
+
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p objArray["results"]
+    objArray["results"].each do |result|
+      group = Group.new
+
+      group.name = result["name"]
+      group.id = result["id"]
+      group.creater_fname = result["creator"]["first_name"]
+      group.creater_lname = result["creator"]["last_name"]
+      hash = group.as_json
+
+      @mygroups[hash["id"]] = hash
+    end
+
+    ############################################
   end
 
   # GET /courses/new
-
+# curl --request GET \
+#   --url 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=677' \
+#   --header 'authorization: Token ae58c6766f9152f8ffe0a143382f4121fbf6e3cb'
   ######## API call add this course to our assigned courses (API)
   # URL: /api/courses/:id/join
-  def new  
-    # not sure how to join clases using the api
-    # id =  params[:format]
-    # respones = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/join', {authorization: "Token ae58c6766f9152f8ffe0a143382f4121fbf6e3cb"}
-    # p respones.body
-    # redirect_to root_path
+
+  def new   ## 401 not Authorized?
+    id =  params[:format]
+    line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/join/'
+
+    require "net/http"
+    require "uri"
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    response.inspect
+
+    puts response.body
+    redirect_to courses_path
   end
 
   # GET /courses/1/edit
@@ -125,13 +214,27 @@ class CoursesController < ApplicationController
   # DELETE /courses/1
   # DELETE /urses/1.json
   # /api/courses/:id/leave
-  def destroy ## REMOVE COURSE FROM ASSIGNED COURSES (API CALL)
+  def destroy ## 401 not Authorized?
+    id =  params[:id]
+    line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/leave/'
 
-    @course.destroy
-    respond_to do |format|
-      format.html { redirect_to courses_url, notice: 'Course was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    require "net/http"
+    require "uri"
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    response.inspect
+
+    puts response.body
+    redirect_to courses_path
   end
 
   private
