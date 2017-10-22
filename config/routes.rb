@@ -1,10 +1,11 @@
-Rails.application.routes.draw do
-   #'login/login'
+Rails.application.routes.draw do 
+  get 'static_pages/home'
 
-  resources :groups
-  resources :meetings
-  resources :courses
-   get 'login/verify_login'
-   root 'login#login'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+	get '/login', to: 'login#verify_login'
+
+	root 'login#login'
+	resources :groups
+	resources :meetings
+	resources :courses
+ 
 end
