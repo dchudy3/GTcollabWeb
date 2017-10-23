@@ -1,15 +1,26 @@
 <p id="notice"><%= notice %></p>
-<data> Token: <%= $token %></data>
-<data> user id : <%= $user_id %></data>
-<h1>Courses You are assigned to <%= @mycourses.length %> Courses!</h1>
-<table>
-  <thead>
-    <tr>
-      <th colspan="4"></th>
-    </tr>
-  </thead>
+<!--<data> Token: <%= $token %></data> -->
+<!-- <data> user id : <%= $user_id %></data> -->
+<h1>Welcome!</h1>
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">My Courses</a></li>
+  <li><a data-toggle="tab" href="#menu1">My Groups</a></li>
+  <li><a data-toggle="tab" href="#menu2">Upcoming Meetings</a></li>
+</ul>
 
-  <tbody>
+<div class="tab-content">
+ 
+  <div id="home" class="tab-pane fade in active">
+    <h3>My Courses</h3>
+      <h1>Courses You are assigned to <%= @mycourses.length %> Courses!</h1>
+  <table>
+    <thead>
+      <tr>
+        <th colspan="4"></th>
+      </tr>
+    </thead>
+
+    <tbody>
     <% @mycourses.each do |course| %>
       <tr>
       <td><%= course[1]["name"] %> </td>
@@ -21,27 +32,33 @@
     <% end %>
   </tbody>
 </table>
+  </div>
+  <div id="menu1" class="tab-pane fade">
+    <h3>My Groups</h3>
+    <p>Some content in menu 1.</p>
+  </div>
+  <div id="menu2" class="tab-pane fade">
+    <h3>Upcoming Meetings</h3>
+    <p>Some content in menu 2.</p>
+  </div>
+  
+</div>
 
-<br>
+<script type="text/javascript">
 
+  $(".tab").on('click', function(e){
+    
+    e.preventDefault()
+    
+    $(".active").removeClass("active")
+    
+    $(this).addClass("active")
+    
+    $(".inner-formdiv").hide()
+    
+    console.log("#" + $(this).attr("target"))
+    
+    $("#" + $(this).attr("target")).show()
+  })
 
-
-<h1>THere are <%= @courses.length %> Courses to choose from!</h1>
-<table>
-  <thead>
-    <tr>
-      <th colspan="4"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @courses.each do |course| %>
-      <tr>
-      <td><%= course[1]["name"] %> </td>
-      <td><%= course[1]["id"] %> </td>
-        <td><%= link_to 'Show', course_path(course[0]) %></td>
-        <td><%= link_to 'Add to My Course', new_course_path(course[0]) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+</script>
