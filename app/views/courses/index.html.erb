@@ -39,7 +39,25 @@
   </div>
   <div id="menu2" class="tab-pane fade">
     <h3>Upcoming Meetings</h3>
-    <p>Some content in menu 2.</p>
+    <h1>THere are <%= @courses.length %> Courses to choose from!</h1>
+<table>
+  <thead>
+    <tr>
+      <th colspan="4"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @courses.each do |course| %>
+      <tr>
+      <td><%= course[1]["name"] %> </td>
+      <td><%= course[1]["id"] %> </td>
+        <td><%= link_to 'Show', course_path(course[0]) %></td>
+        <td><%= link_to 'Add to My Course', new_course_path(course[0]) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
   </div>
   
 </div>
