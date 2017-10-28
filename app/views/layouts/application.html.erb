@@ -11,10 +11,10 @@
     <![endif]-->
   </head>
   <body>
-    <header class="navbar navbar-fixed-top navbar-inverse">
+    <header class="navbar navbar-fixed-top myNavbar">
       <div class="container">
-        <%= link_to "GTCollab", '#', id: "logo" %>
-         <%= render 'layouts/header' %>
+        <%= link_to image_tag("logo-1.png"), course_path, class: 'navbar-brand'%>
+         <%= render 'layouts/header' , class: 'navbar-brand' %>
 
       </div>
     </header>
