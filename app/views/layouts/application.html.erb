@@ -11,15 +11,15 @@
     <![endif]-->
   </head>
   <body>
-    <header class="navbar navbar-fixed-top myNavbar">
-      <div class="container">
-        <%= link_to image_tag("logo-1.png"), course_path, class: 'navbar-brand'%>
-         <%= render 'layouts/header' , class: 'navbar-brand' %>
+    
 
-      </div>
-    </header>
+    <%= render 'layouts/navbar' , class: 'navbar-brand' %>
+    
     <div class="container">
       <%= yield %>
     </div>
+  
+
+
   </body>
 </html>
