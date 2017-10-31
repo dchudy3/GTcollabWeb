@@ -1,10 +1,25 @@
-<p id="notice"><%= notice %></p>
+<!--<p id="notice"><%= notice %></p>-->
 <div> <%= @course.name%> </div>
 
 <h3 class = "text-center">COURSE INFO </h3>
 <h3 class = "text-center">Course internal id: <%= @course.id%> </h3>
 <h3 class = "text-center">Course name : <%= @course.name %></h3>
-<h3 class = "text-center"><%= button_to "Add Course", {action: "new", id: @course.id, remote: true}, {class: 'btn btn-default'} %></h3>
+
+<div>
+    <div style="float:left;">
+      <%= button_to "Add to My Courses", {action: "new", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+    </div>
+    <div style="float:left;">
+      <%= button_to "Create Group", {action: "new", controller: "groups", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+    </div>
+    <div style="float:left;">
+      <%= button_to "Create Meeting", {action: "new", controller: "meetings", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+    </div>
+    <div style="clear:both;">
+    </div>
+</div>
+
+
 <ul class="nav nav-tabs">
   <li class="active"><a data-toggle="tab" href="#home">Groups</a></li>
   <li><a data-toggle="tab" href="#menu1">Meetings</a></li>
