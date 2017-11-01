@@ -1,46 +1,64 @@
-<p id="notice"><%= notice %></p>
+<!--<p id="notice"><%= notice %></p>-->
 <div> <%= @course.name%> </div>
 
-<h3>COURSE INFO </h3>
+<h3 class = "text-center">COURSE INFO </h3>
+<h3 class = "text-center">Course internal id: <%= @course.id%> </h3>
+<h3 class = "text-center">Course name : <%= @course.name %></h3>
 
-<div> Course internal id: <%= @course.id%></div>
-<div> Course name : <%= @course.name %></div>
-
-<p id="notice"><%= notice %></p>
-<br>
-<h3>Groups INFO </h3>
-
-<h4>Groups you are currecntly a part of <%= @mygroups.length %>!</h4>
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
-
-    <% if @mygroups.length == 0 %>
-    	<tr> TABLE IS EMPTY </tr>
-    <% end %>
-  <tbody>
-    <% @mygroups.each do |group| %>
-      <tr>
-      <td><%= group[1]["id"] %> </td>
-      <td><%= group[1]["name"] %> </td>
-      <td><%= group[1]["creater_fname"] %> </td>
-      <td><%= group[1]["creater_lname"] %> </td>
-        <td><%= link_to 'Show Details', group_path(group[0]) %></td>
-        <td><%= link_to 'Remove from me from group', group_path(group[0]),
-            data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
+<div>
+    <div style="float:left;">
+      <%= button_to "Add to My Courses", {action: "new", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+    </div>
+    <div style="float:left;">
+      <%#= button_to "Create Group", {action: "new", controller: "groups", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+      <%= link_to 'Create Group', '#groupEntryModal', class: 'btn btn-default', 'data-toggle' => 'modal' %>
+    </div>
+    <div style="float:left;">
+      <%= button_to "Create Meeting", {action: "new", controller: "meetings", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+    </div>
+    <div style="clear:both;">
+    </div>
+</div>
 
 
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">Groups</a></li>
+  <li><a data-toggle="tab" href="#menu1">Meetings</a></li>
+  <li><a data-toggle="tab" href="#menu2">Members</a></li>
+</ul>
 
-<h4>THere are <%= @groups.length %> groups for this course!</h4>
+<div class="tab-content">
+<div id="home" class="tab-pane fade in active">
+    <br>
+    <h3>Groups INFO </h3>
+
+    <h4>Groups you are currecntly a part of <%= @mygroups.length %>!</h4>
+    <table>
+      <thead>
+        <tr>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
+
+        <% if @mygroups.length == 0 %>
+          <tr> TABLE IS EMPTY </tr>
+        <% end %>
+      <tbody>
+        <% @mygroups.each do |group| %>
+          <tr>
+          <td><%= group[1]["id"] %> </td>
+          <td><%= group[1]["name"] %> </td>
+          <td><%= group[1]["creater_fname"] %> </td>
+          <td><%= group[1]["creater_lname"] %> </td>
+            <td><%= link_to 'Show Details', group_path(group[0]) %></td>
+            <td><%= link_to 'Remove from me from group', group_path(group[0]),
+                data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
+    <h4>There are <%= @groups.length %> groups for this course!</h4>
 <table>
   <thead>
     <tr>
@@ -50,7 +68,7 @@
 
   <tbody>
     <% if @groups.length == 0 %>
-    	<tr> TABLE IS EMPTY  </tr>
+      <tr> TABLE IS EMPTY  </tr>
     <% end %>
     <% @groups.each do |group| %>
       <tr>
@@ -64,9 +82,11 @@
   </tbody>
 </table>
 
-<br>
 
-
+    <br>
+  </div>
+<div id="menu1" class="tab-pane fade">
+    
 <h3>Meetings INFO </h3>
 <h4>Meetings you are currecntly a part of <%= @mymeetings.length %>!</h4>
 <table>
@@ -78,7 +98,7 @@
 
   <tbody>
     <% if @mymeetings.length == 0 %>
-    	<tr> TABLE IS EMPTY  </tr>
+      <tr> TABLE IS EMPTY  </tr>
     <% end %>
 
     <% @mymeetings.each do |meeting| %>
@@ -110,7 +130,7 @@
     </tr>
   </thead>
     <% if @meetings.length == 0 %>
-    	<tr> TABLE IS EMPTY  </tr>
+      <tr> TABLE IS EMPTY  </tr>
     <% end %>
   <tbody>
     <% @meetings.each do |meeting| %>
@@ -128,8 +148,57 @@
   </tbody>
 </table>
 
+  </div>
+<div id="menu2" class="tab-pane fade">
+    <h3>Members</h3>
+    <p>Some content in menu 1.</p>
+  </div>  
+</div>
+
+<!--=================== Group =======================--> 
+<article class='group-info group'>
+  
+  <!-- Add New group Modal -->
+  <div class="modal entry-modal fade" id="groupEntryModal" tabindex="-1" role="dialog" aria-labelledby="intakeEntryModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Create New Group</h4>
+        </div>
+        <div class="modal-body">
+            <%= render 'groupform_modal', modal: true%>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+
+
 
 
 
 <%= link_to 'Back', courses_path %>
 
+<script type="text/javascript">
+
+  $(".tab").on('click', function(e){
+    
+    e.preventDefault()
+    
+    $(".active").removeClass("active")
+    
+    $(this).addClass("active")
+    
+    $(".inner-formdiv").hide()
+    
+    console.log("#" + $(this).attr("target"))
+    
+    $("#" + $(this).attr("target")).show()
+  })
+
+</script>

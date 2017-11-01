@@ -45,10 +45,15 @@ class GroupsController < ApplicationController
     redirect_to courses_path
   end
 
+  def newGroup
+  end
+
   # GET /groups/1/edit
   def edit
   end
 
+  def editGroup
+  end
   # POST /groups
   # POST /groups.json
   def create

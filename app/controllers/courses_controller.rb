@@ -49,6 +49,25 @@ class CoursesController < ApplicationController
     end
   end
 
+    def search
+    @search = params["q"]
+    @mycourses = Hash.new
+
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
+    objArray = JSON.parse(response.body)
+
+    objArray["results"].each do |result|
+      course = Course.new
+      course.name = result["name"]
+      course.id = result["id"]
+      course.course_number = result["course_number"]
+      hash = course.as_json
+      @courses[hash["id"]] = hash
+    end
+    
+   
+
+    end
   # GET /courses/1
   # GET /courses/1.json
 
@@ -180,6 +199,7 @@ class CoursesController < ApplicationController
   # GET /courses/1/edit
   def edit # NO USED
   end
+
 
   # POST /courses
   # POST /courses.json
