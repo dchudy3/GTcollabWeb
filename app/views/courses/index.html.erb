@@ -27,8 +27,9 @@
       <td><%= course[1]["name"] %> </td>
       <td><%= course[1]["id"] %> </td>
         <td><%= link_to 'Show', course_path(course[0],course[1]["name"]) %></td>
-        <td><%= link_to 'Remove from My course', course_path(course[0]),
-            data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
+        <td><%= link_to 'Destroy',  { action: :destroy, id: course[0] }, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+<!--         <td>< link_to 'Remove from My course', course_path(course[0]),
+            data: {:confirm => 'Are you sure?'}, :method => :delete %></td> -->
       </tr>
     <% end %>
   </tbody>
@@ -36,11 +37,67 @@
   </div>
   <div id="menu1" class="tab-pane fade">
     <h3>My Groups</h3>
-    <p>Some content in menu 1.</p>
+    <h4>Groups you are currently a part of <%= @mygroups.length %>!</h4>
+    <table>
+      <thead>
+        <tr>
+          <th colspan="3"></th>
+        </tr>
+      </thead>
+
+        <% if @mygroups.length == 0 %>
+          <tr> TABLE IS EMPTY </tr>
+        <% end %>
+      <tbody>
+        <% @mygroups.each do |group| %>
+          <tr>
+          <td><%= group[1]["id"] %> </td>
+          <td><%= group[1]["name"] %> </td>
+          <td><%= group[1]["creator_firstname"] %> </td>
+          <td><%= group[1]["creator_lastname"] %> </td>
+            <td><%= link_to 'Show Details', group_path(group[0]) %></td>
+            <td><%= link_to 'Remove from me from group', group_path(group[0]),
+                data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+
   </div>
   <div id="menu2" class="tab-pane fade">
     <h3>Upcoming Meetings</h3>
-    <p>Some content in menu 2.</p>
+<h4>Meetings you are currecntly a part of <%= @mymeetings.length %>!</h4>
+<table>
+  <thead>
+    <tr>
+      <th colspan="8"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% if @mymeetings.length == 0 %>
+      <tr> TABLE IS EMPTY  </tr>
+    <% end %>
+
+    <% @mymeetings.each do |meeting| %>
+
+      <tr>
+      <td><%= meeting[1]["name"] %> </td>
+       <td><%= meeting[1]["location"] %> </td>
+        <td><%= meeting[1]["description"] %> </td>
+        <td><%= meeting[1]["start_date"] %> </td>
+        <td><%= meeting[1]["start_time"] %> </td>
+        <td><%= meeting[1]["duraion"] %> </td>
+        <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
+        <td><%= link_to 'Remove from me from meeting', meeting_path(meeting[0]),
+            data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
   </div>
   <div id="menu3" class="tab-pane fade">
     <h3>Search for Classes</h3>

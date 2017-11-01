@@ -23,9 +23,13 @@ class CoursesController < ApplicationController
   def index
     @courses = Hash.new
     @mycourses = Hash.new
+
+    @mygroups = Hash.new
+    @mymeetings = Hash.new
+    course_id = ""
     ### get all classes
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
+    ##response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
 
 
     response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
@@ -41,8 +45,6 @@ class CoursesController < ApplicationController
     end
 
     ## Get users specifc classes
-    ##    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
-
     response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     puts objArray
@@ -54,9 +56,44 @@ class CoursesController < ApplicationController
       hash = course.as_json
       @mycourses[hash["id"]] = hash
     end
+
+    ### get my groups
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups/?members=' + $user_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p objArray["results"]
+    objArray["results"].each do |result|
+      group = Group.new
+
+      group.name = result["name"]
+      group.id = result["id"]
+      group.creator_firstname = result["creator"]["first_name"]
+      group.creator_lastname = result["creator"]["last_name"]
+      hash = group.as_json
+
+      @mygroups[hash["id"]] = hash
+    end
+
+    ### get my meetings
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?members=' + $user_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p objArray["results"]
+    objArray["results"].each do |result|
+      meeting = Meeting.new
+
+      meeting.name = result["name"]
+      meeting.id = result["id"]
+      meeting.location = result["location"]
+      meeting.description = result["description"]
+      meeting.start_date = result["start_date"]
+      meeting.start_time = result["start_time"]
+      meeting.duration = result["duration"]
+      hash = meeting.as_json
+
+      @mymeetings[hash["id"]] = hash
+    end
   end
 
-    def search
+  def search
     @search = params["q"]
     @mycourses = Hash.new
 
@@ -71,10 +108,7 @@ class CoursesController < ApplicationController
       hash = course.as_json
       @courses[hash["id"]] = hash
     end
-    
-   
-
-    end
+  end
   # GET /courses/1
   # GET /courses/1.json
 
@@ -101,8 +135,6 @@ class CoursesController < ApplicationController
 
     ####### MEMBER DATA ####
     @memeber = nil
-
-
 
 
     ############# MEETING DATA ##################
@@ -248,31 +280,35 @@ class CoursesController < ApplicationController
   # /api/courses/:id/leave
   def destroy ## 401 not Authorized?
     id =  params[:id]
-    line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/leave/'
 
-    require "net/http"
-    require "uri"
+    response = RestClient.post 'https://secure-headland-60131.herokuapp.com/api/courses/' + id +'/leave/', {authorization: $token}
 
-    parsed_url = URI.parse(line)
+    puts "WE GOT INTO DESTORY ::::::::::::::::::"
+    # line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/leave/', 
 
-    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
-    http.use_ssl = true
+    # require "net/http"
+    # require "uri"
 
-    req = Net::HTTP::Post.new(parsed_url.request_uri)
+    # parsed_url = URI.parse(line)
 
-    req.add_field("authorization", $token)
+    # http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    # http.use_ssl = true
 
-    response = http.request(req)
-    response.inspect
+    # req = Net::HTTP::Post.new(parsed_url.request_uri)
 
-    puts response.body
+    # req.add_field("authorization", $token)
+
+    # response = http.request(req)
+    # response.inspect
+
+    # puts response.body
     redirect_to courses_path
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_course
-      @id =  params[:id]
+      #@id =  params[:id]
       #@course = Course.find(params[:id])
     end
 

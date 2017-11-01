@@ -15,14 +15,18 @@ class LoginController < ApplicationController
 	  	response = RestClient.post 'https://secure-headland-60131.herokuapp.com/api/api-token-auth/', {username: username, password: password}
 	    objArray = JSON.parse(response.body)
 	    p objArray
+	    p "INTO uservalidate we go"
 	    if response.code == 200 #OK request
 	    	puts objArray
 	    	$token = "Token " + objArray["token"]
-	    	puts username.class
-			$user_id = username[4,username.length]
-			## console.log($user_id)
-
-			## response = RestClient.post 'https://secure-headland-60131.herokuapp.com/api/api-token-auth/api/users/?username=" + user_id
+	    	p "hello?"
+			response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/users/?username=' + username, {authorization: $token}
+	    	p "we got here?"
+	    	objArray = JSON.parse(response.body)
+	    	p objArray
+	    	$user_id = objArray["results"][0]["id"].to_s
+	    	p $user_id
+	    	p $user_id.class
 	    	puts $user_id
 	    	puts $token
 	    	redirect_to courses_path
