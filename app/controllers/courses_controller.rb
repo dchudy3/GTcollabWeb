@@ -23,6 +23,10 @@ class CoursesController < ApplicationController
   def index
     @courses = Hash.new
     @mycourses = Hash.new
+    ### get all classes
+
+    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
+
 
     response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
     objArray = JSON.parse(response.body)
@@ -35,6 +39,9 @@ class CoursesController < ApplicationController
       hash = course.as_json
       @courses[hash["id"]] = hash
     end
+
+    ## Get users specifc classes
+    ##    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
 
     response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
@@ -92,8 +99,13 @@ class CoursesController < ApplicationController
     @course.name = params[:name]
     #################################
 
-    ############# MEETING DATA ##################
+    ####### MEMBER DATA ####
+    @memeber = nil
 
+
+
+
+    ############# MEETING DATA ##################
     response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray["results"]
@@ -141,8 +153,8 @@ class CoursesController < ApplicationController
 
       group.name = result["name"]
       group.id = result["id"]
-      group.creater_fname = result["creator"]["first_name"]
-      group.creater_lname = result["creator"]["last_name"]
+      group.creator_firstname = result["creator"]["first_name"]
+      group.creator_lastname = result["creator"]["last_name"]
       hash = group.as_json
 
       @groups[hash["id"]] = hash
@@ -156,8 +168,8 @@ class CoursesController < ApplicationController
 
       group.name = result["name"]
       group.id = result["id"]
-      group.creater_fname = result["creator"]["first_name"]
-      group.creater_lname = result["creator"]["last_name"]
+      group.creator_firstname = result["creator"]["first_name"]
+      group.creator_lastname = result["creator"]["last_name"]
       hash = group.as_json
 
       @mygroups[hash["id"]] = hash

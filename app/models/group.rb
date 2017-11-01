@@ -3,8 +3,13 @@ class Group
 
   attr_accessor :name
   attr_accessor :id
-  attr_accessor :creater_fname
-  attr_accessor :creater_lname
+  attr_accessor :course_id
+  attr_accessor :creator_id
+  attr_accessor :creator_username
+  attr_accessor :creator_firstname
+  attr_accessor :creator_lastname
+  attr_accessor :creator_email
+  attr_accessor :members
 
   validates :name, presence: true
 end

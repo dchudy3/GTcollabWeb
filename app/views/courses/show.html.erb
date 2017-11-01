@@ -48,8 +48,8 @@
           <tr>
           <td><%= group[1]["id"] %> </td>
           <td><%= group[1]["name"] %> </td>
-          <td><%= group[1]["creater_fname"] %> </td>
-          <td><%= group[1]["creater_lname"] %> </td>
+          <td><%= group[1]["creator_firstname"] %> </td>
+          <td><%= group[1]["creator_lastname"] %> </td>
             <td><%= link_to 'Show Details', group_path(group[0]) %></td>
             <td><%= link_to 'Remove from me from group', group_path(group[0]),
                 data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
@@ -73,8 +73,8 @@
     <% @groups.each do |group| %>
       <tr>
       <td><%= group[1]["name"] %> </td>
-      <td><%= group[1]["creater_fname"] %> </td>
-      <td><%= group[1]["creater_lname"] %> </td>
+      <td><%= group[1]["creator_firstname"] %> </td>
+      <td><%= group[1]["creator_lastname"] %> </td>
         <td><%= link_to 'Show', group_path(group[0]) %></td>
         <td><%= link_to 'Add to My Course', new_group_path(group[0]) %></td>
       </tr>
@@ -110,8 +110,8 @@
         <td><%= meeting[1]["start_date"] %> </td>
         <td><%= meeting[1]["start_time"] %> </td>
         <td><%= meeting[1]["duraion"] %> </td>
-        <td><%= link_to 'Show', course_path(meeting[0]) %></td>
-        <td><%= link_to 'Remove from me from meeting', course_path(meeting[0]),
+        <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
+        <td><%= link_to 'Remove from me from meeting', meeting_path(meeting[0]),
             data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
       </tr>
     <% end %>
@@ -120,9 +120,7 @@
 
 <br>
 
-
-
-<h4>THere are <%= @meetings.length %> meetings for this course!</h4>
+<h4>There are <%= @meetings.length %> meetings for this course!</h4>
 <table>
   <thead>
     <tr>
@@ -141,8 +139,8 @@
         <td><%= meeting[1]["start_date"] %> </td>
         <td><%= meeting[1]["start_time"] %> </td>
         <td><%= meeting[1]["duraion"] %> </td>
-        <td><%= link_to 'Show', course_path(meeting[0]) %></td>
-        <td><%= link_to 'Add to My Course', new_course_path(meeting[0]) %></td>
+        <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
+        <td><%= link_to 'Add to My Course', new_meeting_path(meeting[0]) %></td>
       </tr>
     <% end %>
   </tbody>
@@ -151,7 +149,22 @@
   </div>
 <div id="menu2" class="tab-pane fade">
     <h3>Members</h3>
-    <p>Some content in menu 1.</p>
+    <p> more memeber data to be populated </p>
+      <table>
+        <thead>
+          <tr>
+            <th colspan="2"></th>
+          </tr>
+        </thead>
+
+        <tbody>
+<!--          @members.each do |member| %> -->
+          <tr>
+<!--           <td><= member %> </td>
+          <td>< member["id"] %> </td> -->
+          </tr>
+<!--          end %> -->
+      </tbody>
   </div>  
 </div>
 

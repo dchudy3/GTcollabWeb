@@ -1,4 +1,30 @@
 <p id="notice"><%= notice %></p>
 
-<%= link_to 'Edit', edit_group_path(@group) %> |
-<%= link_to 'Back', groups_path %>
+
+
+<div> Group Name: </div>
+<div> <%= @group.name %> </div>
+<br>
+<div> Group id: </div>
+<div> <%= @group.id %> </div>
+<br>
+<div> Group course: </div>
+<div> <%= @group.course_id %> </div>
+<br>
+<br>
+<div>Creator </div>
+<div> Creater username: </div>
+<div> <%= @group.creator_username %> </div>
+<br>
+<div> Creater name : </div>
+<div> <%= @group.creator_firstname + " " + @group.creator_lastname %> </div>
+<br>
+<div> Creater id: </div>
+<div> <%= @group.creator_id %> </div>
+<br>
+<br>
+<div> Memeber List:  </div>
+<div> <%= @group.members %></div>
+
+<%= link_to 'Edit', edit_group_path(@group.id) %> |
+<%= link_to 'Back', course_path(@group.course_id) %>
