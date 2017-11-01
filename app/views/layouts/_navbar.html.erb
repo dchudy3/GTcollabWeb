@@ -10,6 +10,7 @@
                     </button>
                     <a class="navbar-brand" href="/courses">GTCollab</a>
                   </div>
+                  <% if $user_id != nil %>
 
                   <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                     <ul class="nav navbar-nav">
@@ -38,5 +39,6 @@
                       <li><a href="#">Sign Out</a></li>
                     </ul>
                   </div>
+                                    <%end %>
                 </div>
               </nav>
