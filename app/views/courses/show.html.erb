@@ -10,7 +10,8 @@
       <%= button_to "Add to My Courses", {action: "new", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
     </div>
     <div style="float:left;">
-      <%= button_to "Create Group", {action: "new", controller: "groups", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+      <%#= button_to "Create Group", {action: "new", controller: "groups", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+      <%= link_to 'Create Group', '#groupEntryModal', class: 'btn btn-default', 'data-toggle' => 'modal' %>
     </div>
     <div style="float:left;">
       <%= button_to "Create Meeting", {action: "new", controller: "meetings", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
@@ -154,8 +155,27 @@
   </div>  
 </div>
 
-
-
+<!--=================== Group =======================--> 
+<article class='group-info group'>
+  
+  <!-- Add New group Modal -->
+  <div class="modal entry-modal fade" id="groupEntryModal" tabindex="-1" role="dialog" aria-labelledby="intakeEntryModalLabel">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title" id="myModalLabel">Create New Group</h4>
+        </div>
+        <div class="modal-body">
+            <%= render 'groupform_modal', modal: true%>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
 
 
 

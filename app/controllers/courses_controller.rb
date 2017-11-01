@@ -200,6 +200,7 @@ class CoursesController < ApplicationController
   def edit # NO USED
   end
 
+
   # POST /courses
   # POST /courses.json
   def create ## NO USED

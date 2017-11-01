@@ -1,0 +1,78 @@
+<% modal ||= false %>
+<% remote = modal ? true : false %>
+
+<%= form_tag("group", method: "new") do %>
+
+    <%= label_tag "Name"%>
+    <%= text_field_tag :name, "", class: 'form-control' %>
+        
+    <%= label_tag "Location" %>
+    <%= text_field_tag :location , "", class: 'form-control'%>
+
+    <%= label_tag "Username"%>
+    <%= text_field_tag :username, "", class: 'form-control' %>
+    
+    <%= label_tag "State Date" %>
+    <%= text_field_tag :start_date , "", class: 'datepicker required'%>
+
+    <%= label_tag "End Date" %>
+    <%= text_field_tag :end_date , "", class: 'datepicker required'%>
+
+    <%= label :post, "Members" %>
+    <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Select Members
+            <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+
+            </ul>
+          </div>           
+
+
+
+    <div id = "member-list"></div>
+
+    <%= text_field_tag 'members', "", class: "hidden-member", style: "display:none;"  %>
+
+    <%= submit_tag :create_group, class: "btn btn-primary"%>
+<% end %>
+
+<script>
+    $('.datepicker').datetimepicker({
+    //endDate: '+5y',
+    format:'YYYY/MM/DD hh:mm A',
+    
+  });
+      $(".member-dd-item").on("click", function(e){
+    
+    e.stopPropagation();
+    e.preventDefault();
+    var text = $(this).text();
+    var val = $(this).attr("value");
+    if(text == "Select Assignee"){
+      return
+    }
+    html = $("#member-list").html();
+    html += "<div id = 'member-" + val + "'' class = 'member-item select-item' style = 'position: relative; display: inline-block;'>" 
+        + "<p style = 'margin:0px; padding-right:15px'>" + text + "</p>" + 
+       "<span class = 'glyphicon glyphicon-remove remove-member remove-item' style='margin:2px; float:right;'>" +"</span>" + 
+       " </div>"
+    $("#member-list").html(html);
+    $(".remove-member").on("click", function(){
+      $(this).closest(".member-item").detach()
+      setHiddenMember();
+    })
+    //just for now while im setting up the new breeds
+    $(this).get(0).selectedIndex = 0;
+    setHiddenMember();
+  })
+  function setHiddenMember(){
+    str = ""
+    $(".member-dd-item").show();
+    $(".member-item").each(function(){
+      var id = this.id.split("-")[1]
+      $("#member-dd-" +id).hide();
+      str += id + "|"
+    })
+    $(".hidden-member").val(str)
+  }
+</script>
