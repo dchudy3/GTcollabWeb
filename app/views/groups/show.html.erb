@@ -2,29 +2,25 @@
 
 
 
-<h2> Group Name: </h2>
-<div> <%= @group.name %> </div>
+<h2> Group Information</h2>
+<div> Group Name: <%= @group.name %> </div>
+
+<div> Group id: <%= @group.id %> </div>
+<div> Class course: <%= @group.course_id %> </div>
 <br>
-<h2> Group id: </h2>
-<div> <%= @group.id %> </div>
+<h2> Group Messages</h2>
+<div>empty</div>
 <br>
-<h2> Group course: </h2>
-<div> <%= @group.course_id %> </div>
-<br>
-<br>
-<h2>Creator </h2>
-<div> Creater username: </div>
-<div> <%= @group.creator_username %> </div>
-<br>
-<div> Creator name : </div>
-<div> <%= @group.creator_firstname + " " + @group.creator_lastname %> </div>
-<br>
-<div> Creater id: </div>
-<div> <%= @group.creator_id %> </div>
-<br>
+<h2>Creator Information </h2>
+<div>  </div>
+<div> Username: <%= @group.creator_username %> </div>
+<div> Name : <%= @group.creator_firstname + " " + @group.creator_lastname %> </div>
+<div> ID: <%= @group.creator_id %> </div>
 <br>
 <h2> Member List:  </h2>
-<div> <%= @group.members %></div>
-
+<% @group.members.each do |mem|%>
+<div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div>
+<% end %>
+<br>
 <%= link_to 'Edit', edit_group_path(@group.id) %> |
 <%= link_to 'Back', course_path(@group.course_id) %>

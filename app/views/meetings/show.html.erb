@@ -2,44 +2,31 @@
 
 
 
-<div> Group Name: </div>
-<div> <%= @meeting.name %> </div>
+<h2> Group</h2>
+<div> Name: <%= @meeting.name %> </div>
+<div> Id: <%= @meeting.id %> </div>
 <br>
-<div> Group id: </div>
-<div> <%= @meeting.id %> </div>
+<h2> Meeting Annoucement</h2>
+<div>empty</div>
 <br>
-<div> Group course: </div>
-<div> <%= @meeting.course_id %> </div>
+<h2> Group</h2>
+<div> ID: <%= @meeting.course_id %> </div>
+<div> Location: <%= @meeting.location %> </div>
+<div> Description: <%= @meeting.description %> </div>
+<div> Start Date: <%= @meeting.start_date %> </div>
+<div> Start Time: <%= @meeting.start_time %> </div>
+<div> Duration: <%= @meeting.duration %> </div>
 <br>
-<div> Group location: </div>
-<div> <%= @meeting.location %> </div>
+<h2>Creator </h2>
+<div> Username: <%= @meeting.creator_username %> </div>
+<div> Name: <%= @meeting.creator_firstname + " " + @meeting.creator_lastname %> </div>
+<div> ID: <%= @meeting.creator_id %> </div>
 <br>
-<div> Group description: </div>
-<div> <%= @meeting.description %> </div>
+<h2> Member List:  </h2>
+<% @meeting.members.each do |mem|%>
+<div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div>
+<% end %>
 <br>
-<div> Group start_date: </div>
-<div> <%= @meeting.start_date %> </div>
-<br>
-<div> Group start_time: </div>
-<div> <%= @meeting.start_time %> </div>
-<br>
-<div> Group duration: </div>
-<div> <%= @meeting.duration %> </div>
-<br>
-<br>
-<div>Creator </div>
-<div> Creater username: </div>
-<div> <%= @meeting.creator_username %> </div>
-<br>
-<div> Creater name : </div>
-<div> <%= @meeting.creator_firstname + " " + @meeting.creator_lastname %> </div>
-<br>
-<div> Creater id: </div>
-<div> <%= @meeting.creator_id %> </div>
-<br>
-<br>
-<div> Memeber List:  </div>
-<div> <%= @meeting.members %></div>
 
 <%= link_to 'Edit', edit_meeting_path(@meeting.id) %> |
 <%= link_to 'Back', course_path(@meeting.course_id) %>

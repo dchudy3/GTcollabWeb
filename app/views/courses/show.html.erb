@@ -7,7 +7,8 @@
 
 <div>
     <div style="float:left;">
-      <%= button_to "Add to My Courses", {action: "new", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+    <td><%= link_to 'Add to My Course', new_course_path(@course.id), :class => 'btn btn-default' , :style => "color:white" %></td>
+
     </div>
     <div style="float:left;">
       <%#= button_to "Create Group", {action: "new", controller: "groups", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
