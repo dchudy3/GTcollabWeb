@@ -32,7 +32,7 @@ class CoursesController < ApplicationController
     ##response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
 
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |result|
@@ -45,7 +45,7 @@ class CoursesController < ApplicationController
     end
 
     ## Get users specifc classes
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     puts objArray
     objArray["results"].each do |result|
@@ -58,7 +58,7 @@ class CoursesController < ApplicationController
     end
 
     ### get my groups
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups/?members=' + $user_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/?members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray["results"]
     objArray["results"].each do |result|
@@ -74,7 +74,7 @@ class CoursesController < ApplicationController
     end
 
     ### get my meetings
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?members=' + $user_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray["results"]
     objArray["results"].each do |result|
@@ -97,7 +97,7 @@ class CoursesController < ApplicationController
     @search = params["q"]
     @mycourses = Hash.new
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |result|
@@ -138,7 +138,7 @@ class CoursesController < ApplicationController
 
 
     ############# MEETING DATA ##################
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray["results"]
     objArray["results"].each do |result|
@@ -157,7 +157,7 @@ class CoursesController < ApplicationController
     end
 
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=' + course_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?course=' + course_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |result|
@@ -177,7 +177,7 @@ class CoursesController < ApplicationController
     ###########################################
 
     ############# Group DATA ##################
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups?course=' + course_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups?course=' + course_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray["results"]
     objArray["results"].each do |result|
@@ -192,7 +192,7 @@ class CoursesController < ApplicationController
       @groups[hash["id"]] = hash
     end
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray["results"]
     objArray["results"].each do |result|
@@ -219,7 +219,7 @@ class CoursesController < ApplicationController
 
   def new   ## 401 not Authorized?
     id =  params[:format]
-    line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/join/'
+    line = 'https://gtcollab.herokuapp.com/api/courses/' + id + '/join/'
 
     require "net/http"
     require "uri"
@@ -281,7 +281,7 @@ class CoursesController < ApplicationController
   def destroy ## 401 not Authorized?
     id =  params[:id]
 
-    response = RestClient.post 'https://secure-headland-60131.herokuapp.com/api/courses/' + id +'/leave/', {authorization: $token}
+    response = RestClient.post 'https://gtcollab.herokuapp.com/api/courses/' + id +'/leave/', {authorization: $token}
 
     puts "WE GOT INTO DESTORY ::::::::::::::::::"
     # line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/leave/', 
