@@ -1,3 +1,4 @@
+
 <!--<p id="notice"><%= notice %></p>-->
 <!--<data> Token: <%= $token %></data> -->
 <!-- <data> user id : <%= $user_id %></data> -->
@@ -13,88 +14,111 @@
  
   <div id="home" class="tab-pane fade in active">
     <h3>My Courses</h3>
-      <h1>Courses You are assigned to <%= @mycourses.length %> Courses!</h1>
-  <table>
-    <thead>
-      <tr>
-        <th colspan="4"></th>
-      </tr>
-    </thead>
+      <h1>You have <%= @mycourses.length %> registered courses!</h1>
+  
 
-    <tbody>
-    <% @mycourses.each do |course| %>
-      <tr>
-      <td><%= course[1]["name"] %> </td>
-      <td><%= course[1]["id"] %> </td>
-        <td><%= link_to 'Show', course_path(course[0],course[1]["name"]) %></td>
-        <td><%= link_to 'Destroy',  { action: :destroy, id: course[0] }, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-<!--         <td>< link_to 'Remove from My course', course_path(course[0]),
-            data: {:confirm => 'Are you sure?'}, :method => :delete %></td> -->
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  
+
+    <table class="table table-hover">
+      <thead>
+          <tr>
+              <th>Course Name</th>
+              <th>Course ID</th>
+          </tr>
+      </thead>
+      <tbody>
+           <% @mycourses.each do |course| %>
+              <tr>
+                  <td>
+                      <%= link_to raw("<span class=\"glyphicon glyphicon-book\"></span> #{course[1]['name']}"), course_path(course[0], course[1]["name"]), class: "btn btn-info", method: :show %>
+                  </td>
+                  <td>
+                    <h5><%= course[1]["id"] %></h5> 
+                  </td>
+                  <td><%= button_to 'Remove',  { action: :destroy, id: course[0] }, class: "btn btn-primary", method: :delete, data: { confirm: 'Are you sure?' }%>
+                    
+                  </td>
+              </tr>
+        <% end %>
+      </tbody>
+  </table>
+
+
   </div>
   <div id="menu1" class="tab-pane fade">
     <h3>My Groups</h3>
-    <h4>Groups you are currently a part of <%= @mygroups.length %>!</h4>
-    <table>
+    <h4>You are part of <%= @mygroups.length %> groups!</h4>
+    
+    <table class="table table-hover">
       <thead>
-        <tr>
-          <th colspan="3"></th>
-        </tr>
+          <tr>
+              <th>Group Name</th>
+              <th>Group ID</th>
+              <th>Creator</th>
+          </tr>
       </thead>
-
         <% if @mygroups.length == 0 %>
-          <tr> TABLE IS EMPTY </tr>
+            <tr> You aren't in any group! Get up and join some ;)</tr>
         <% end %>
       <tbody>
-        <% @mygroups.each do |group| %>
-          <tr>
-          <td><%= group[1]["id"] %> </td>
-          <td><%= group[1]["name"] %> </td>
-          <td><%= group[1]["creator_firstname"] %> </td>
-          <td><%= group[1]["creator_lastname"] %> </td>
-            <td><%= link_to 'Show Details', group_path(group[0]) %></td>
-            <td><%= link_to 'Remove from me from group', group_path(group[0]),
-                data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
-          </tr>
+           <% @mygroups.each do |group| %>
+              <tr>
+                  <td>
+                      <%= link_to raw("<span class=\"glyphicon glyphicon-user\"></span> #{group[1]["name"]}"), group_path(group[0]), class: "btn btn-info", method: :show %>
+                  </td>
+                  <td>
+                    <h5><%= group[1]["id"] %></h5> 
+                  </td>
+                  <td>
+                    <%= group[1]["creator_firstname"] %> <%= group[1]["creator_lastname"] %>
+                  </td>
+                  <td>
+                    <%= button_to 'Leave Group', group_path(group[0]),
+                data: {:confirm => 'Are you sure?'}, class: "btn btn-primary", :method => :delete %>
+                </td>
+              </tr>
         <% end %>
       </tbody>
-    </table>
+  </table>
 
   </div>
   <div id="menu2" class="tab-pane fade">
     <h3>Upcoming Meetings</h3>
-<h4>Meetings you are currecntly a part of <%= @mymeetings.length %>!</h4>
-<table>
-  <thead>
-    <tr>
-      <th colspan="8"></th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% if @mymeetings.length == 0 %>
-      <tr> TABLE IS EMPTY  </tr>
-    <% end %>
-
-    <% @mymeetings.each do |meeting| %>
-
-      <tr>
-      <td><%= meeting[1]["name"] %> </td>
-       <td><%= meeting[1]["location"] %> </td>
-        <td><%= meeting[1]["description"] %> </td>
-        <td><%= meeting[1]["start_date"] %> </td>
-        <td><%= meeting[1]["start_time"] %> </td>
-        <td><%= meeting[1]["duraion"] %> </td>
-        <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
-        <td><%= link_to 'Remove from me from meeting', meeting_path(meeting[0]),
-            data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+    <h4>You are part of <%= @mymeetings.length %>! meetings!</h4>
+  
+  <table class="table table-hover">
+      <thead>
+          <tr>
+              <th>Meeting Name</th>
+              <th>Location</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Duration</th>
+          </tr>
+      </thead>
+        <% if @mymeetings.length == 0 %>
+          <tr> You aren't in any meetings :(</tr>
+        <% end %>
+      <tbody>
+           <% @mymeetings.each do |meeting| %>
+              <tr>
+                  <td>
+                      <%= link_to raw("<span class=\"glyphicon glyphicon-user\"></span> #{meeting[1]["name"]}"), meeting_path(meeting[0]) , class: "btn btn-info", method: :show %>
+                  </td>
+                  <td><%= meeting[1]["location"] %> </td>
+                  <td><%= meeting[1]["description"] %> </td>
+                  <td><%= meeting[1]["start_date"] %> </td>
+                  <td><%= meeting[1]["start_time"] %> </td>
+                  <td><%= meeting[1]["duration"] %> </td>
+                  <td>
+                    <%= button_to 'Remove Meeting', meeting_path(meeting[0]),
+                data: {:confirm => 'Are you sure?'}, class: "btn btn-primary", :method => :delete %>
+                </td>
+              </tr>
+        <% end %>
+      </tbody>
+  </table>
 
 <br>
 
@@ -102,24 +126,34 @@
   <div id="menu3" class="tab-pane fade">
     <h3>Search for Classes</h3>
     <h1>There are <%= @courses.length %> Courses to choose from!</h1>
-<table>
-  <thead>
-    <tr>
-      <th colspan="4"></th>
-    </tr>
-  </thead>
+    <table class="table table-hover">
+      <thead>
+          <tr>
+              <th>Course Name</th>
+              <th>Course ID</th>
+          </tr>
+      </thead>
+      <tbody>
+           <% @courses.each do |course| %>
+              <tr>
+                  <td>
+                      <%= link_to raw("<span class=\"glyphicon glyphicon-book\"></span> #{course[1]['name']}"), course_path(course[0], course[1]["name"]), class: "btn btn-info", method: :show %>
+                  </td>
+                  <td>
+                    <h5><%= course[1]["id"] %></h5> 
+                  </td>
+                  <td><%= button_to 'Add Course', new_course_path(course[0]) , class: "btn btn-success"%>
+                    
+                  </td>
+              </tr>
+        <% end %>
+      </tbody>
+  </table>
 
-  <tbody>
-    <% @courses.each do |course| %>
-      <tr>
-      <td><%= course[1]["name"] %> </td>
-      <td><%= course[1]["id"] %> </td>
-        <td><%= link_to 'Show', course_path(course[0]) %></td>
-        <td><%= link_to 'Add to My Course', new_course_path(course[0]) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+
+
+
+
   </div>
   
 </div>

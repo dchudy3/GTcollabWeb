@@ -33,7 +33,7 @@ class MeetingsController < ApplicationController
     @id = params[:id]
     p @id
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/meetings/' + @id , {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/' + @id , {authorization: $token}
     objArray = JSON.parse(response.body)
     p objArray
     members = Array.new

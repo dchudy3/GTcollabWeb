@@ -14,7 +14,7 @@ class GroupsController < ApplicationController
     @id = params[:id]
     p @id
 
-    response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/groups/' + @id , {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/' + @id , {authorization: $token}
     objArray = JSON.parse(response.body)
     members = Array.new
     @group = Group.new
@@ -59,7 +59,7 @@ class GroupsController < ApplicationController
   def new
     puts "in add"
     id =  params[:format]
-    line = "https://secure-headland-60131.herokuapp.com/api/groups/" + id + "/join/"
+    line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/join/"
     puts line
     puts $token
 
@@ -128,7 +128,7 @@ class GroupsController < ApplicationController
     require "uri"
 
     id =  params[:id]
-    line = "https://secure-headland-60131.herokuapp.com/api/groups/" + id + "/leave/"
+    line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/leave/"
     puts line
     puts $token
 
