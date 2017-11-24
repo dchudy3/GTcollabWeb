@@ -10,9 +10,9 @@ class GroupsController < ApplicationController
   # GET /groups/1
   # GET /groups/1.json
   def show
-    p "IN GROUP SHOW !!!!!"
+    #p "IN GROUP SHOW !!!!!"
     @id = params[:id]
-    p @id
+    #p @id
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/' + @id , {authorization: $token}
     objArray = JSON.parse(response.body)
@@ -26,6 +26,7 @@ class GroupsController < ApplicationController
     @group.creator_firstname = objArray["creator"]["first_name"]
     @group.creator_lastname = objArray["creator"]["last_name"]
     @group.creator_email = objArray["creator"]["email"]
+    
     objArray["members"].each do |member|
       members << member
     end

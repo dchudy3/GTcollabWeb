@@ -179,34 +179,65 @@ class CoursesController < ApplicationController
     ############# Group DATA ##################
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups?course=' + course_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p objArray["results"]
-    objArray["results"].each do |result|
-      group = Group.new
-
-      group.name = result["name"]
-      group.id = result["id"]
-      group.creator_firstname = result["creator"]["first_name"]
-      group.creator_lastname = result["creator"]["last_name"]
-      hash = group.as_json
-
-      @groups[hash["id"]] = hash
-    end
+    #p objArray["results"]
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p objArray["results"]
-    objArray["results"].each do |result|
-      group = Group.new
 
+    objArray["results"].each do |result|
+
+      group = Group.new
+      members = Array.new
       group.name = result["name"]
       group.id = result["id"]
       group.creator_firstname = result["creator"]["first_name"]
       group.creator_lastname = result["creator"]["last_name"]
+      
+      result["members"].each do |member|
+        members << member
+      end
+      group.members = members
       hash = group.as_json
 
       @mygroups[hash["id"]] = hash
     end
 
+    #check which groups I am in
+    in_group = false
+    objArray["results"].each do |result|
+      #make sure no duplicate groups
+      @mygroups.each do |group| 
+        if group[1]["id"] == result["id"]
+          in_group = true
+          p result["id"]
+          p group[1]["id"]
+          p in_group
+          p "Already in group"
+          break
+        end
+      end
+      
+      #if I am not in this group yet
+      #if !(in_group)
+        group = Group.new
+        members = Array.new
+        group.name = result["name"]
+        group.id = result["id"]
+        group.creator_firstname = result["creator"]["first_name"]
+        group.creator_lastname = result["creator"]["last_name"]
+        result["members"].each do |member|
+          members << member
+        end
+        if in_group
+          group.joined = true
+        end
+        group.members = members
+        hash = group.as_json
+
+        @groups[hash["id"]] = hash
+      #end
+      
+    end
     ############################################
   end
 

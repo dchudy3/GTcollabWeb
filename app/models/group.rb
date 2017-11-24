@@ -10,6 +10,7 @@ class Group
   attr_accessor :creator_lastname
   attr_accessor :creator_email
   attr_accessor :members
+  attr_accessor :joined
 
   validates :name, presence: true
 end
