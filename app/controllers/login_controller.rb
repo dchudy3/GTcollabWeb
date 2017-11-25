@@ -2,6 +2,11 @@ class LoginController < ApplicationController
   def login
   end
 
+  def forgotPassword
+  end
+
+  def signup
+  end
   def verify_login
 # curl --request POST \
 #   --url 'https://secure-headland-60131.herokuapp.com/api/api-token-auth/' \
@@ -17,18 +22,18 @@ class LoginController < ApplicationController
 	    p objArray
 	    p "INTO uservalidate we go"
 	    if response.code == 200 #OK request
-	    	puts objArray
+	    	#puts objArray
 	    	$token = "Token " + objArray["token"]
-	    	p "hello?"
+	    	#p "hello?"
 			response = RestClient.get 'https://gtcollab.herokuapp.com/api/users/?username=' + username, {authorization: $token}
-	    	p "we got here?"
+	    	#p "we got here?"
 	    	objArray = JSON.parse(response.body)
-	    	p objArray
+	    	3p objArray
 	    	$user_id = objArray["results"][0]["id"].to_s
-	    	p $user_id
-	    	p $user_id.class
-	    	puts $user_id
-	    	puts $token
+	    	#p $user_id
+	    	#p $user_id.class
+	    	#puts $user_id
+	    	#puts $token
 	    	redirect_to courses_path
 	   	else 
 	   		flash[:notice] = 'User was not found, try again'

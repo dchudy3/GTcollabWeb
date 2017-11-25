@@ -1,6 +1,9 @@
 Rails.application.routes.draw do 
 	get '/login', to: 'login#verify_login'
-	
+
+	post '/login', to: "login#forgotPassword"
+	post '/login', to: "login#signup"
+
 	get '/groups/new'
 	get '/groups/edit'
 	post '/groups', to: "groups#newGroup"

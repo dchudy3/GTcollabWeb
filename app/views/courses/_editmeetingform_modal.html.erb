@@ -1,12 +1,27 @@
 <% modal ||= false %>
 <% remote = modal ? true : false %>
 
-<%= form_tag("group", method: "create") do %>
-
+<%= form_tag("group", method: "new") do %>
+    
     <%= hidden_field_tag "course_id", course_id%>
 
     <%= label_tag "Name"%>
     <%= text_field_tag :name, "", class: 'form-control' %>
+        
+    <%= label_tag "Location" %>
+    <%= text_field_tag :location , "", class: 'form-control'%>
+
+    <%= label_tag "Description"%>
+    <%= text_field_tag :description, "", class: 'form-control' %>
+    
+    <%= label_tag "State Date" %>
+    <%= text_field_tag :start_date , "", class: 'datepicker required'%>
+
+    <%= label_tag "Start Time" %>
+    <%= text_field_tag :start_time , "", class: 'datepicker1 required'%>
+
+    <%= label_tag "Duration" %>
+    <%= text_field_tag :duration , "", class: 'form-control'%>
 
     <%= text_field_tag :creator_username , "", class: "hidden-member", style: "display:none;" %>
 
@@ -33,13 +48,18 @@
 
     <%= text_field_tag 'members', "", class: "hidden-member", style: "display:none;"  %>
 
-    <%= submit_tag "Create Group", class: "btn btn-primary"%>
+    <%= submit_tag "Create Meeting", class: "btn btn-primary"%>
 <% end %>
 
 <script>
     $('.datepicker').datetimepicker({
     //endDate: '+5y',
-    format:'YYYY/MM/DD hh:mm A',
+    format:'YYYY/MM/DD',
+    
+  });
+     $('.datepicker1').datetimepicker({
+    //endDate: '+5y',
+    format: 'LT',
     
   });
       $(".member-dd-item").on("click", function(e){

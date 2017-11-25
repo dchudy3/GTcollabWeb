@@ -29,9 +29,7 @@ class MeetingsController < ApplicationController
 # },
 # "members": [
 
-    p "IN GROUP SHOW !!!!!"
     @id = params[:id]
-    p @id
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/' + @id , {authorization: $token}
     objArray = JSON.parse(response.body)
