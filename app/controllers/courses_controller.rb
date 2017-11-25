@@ -47,7 +47,7 @@ class CoursesController < ApplicationController
     ## Get users specifc classes
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    puts objArray
+
     objArray["results"].each do |result|
       course = Course.new
       course.name = result["name"]
@@ -60,7 +60,7 @@ class CoursesController < ApplicationController
     ### get my groups
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/?members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p objArray["results"]
+
     objArray["results"].each do |result|
       group = Group.new
 
@@ -76,7 +76,7 @@ class CoursesController < ApplicationController
     ### get my meetings
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p objArray["results"]
+
     objArray["results"].each do |result|
       meeting = Meeting.new
 
@@ -119,8 +119,9 @@ class CoursesController < ApplicationController
 
   #/api/courses/:id
   def show 
-    puts params
+
     course_id = params[:id]
+
     @mygroups = Hash.new
     @groups = Hash.new
 
@@ -130,19 +131,35 @@ class CoursesController < ApplicationController
     ##### COURSE DATA #############
     @course = Course.new
     @course.id = params[:id]
-    @course.name = params[:name]
+    @course.name = params[:format]
+
+
+    #Getting course members
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/users/?courses_as_member=' + @course.id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p "COUNTTT"
+    p objArray["count"]
+    @count = objArray["count"].to_s
+
+    mem_list = Array.new
+
+    objArray["results"].each do |member|
+      mem_list << member
+    end
+    @course.members = mem_list
+    p "TESTING COUSE!!!!"
+    p @course
     #################################
 
     ####### MEMBER DATA ####
-    @memeber = nil
+    @member = nil
 
 
     ############# MEETING DATA ##################
     #get the user's meetings
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p "SO WOWWWWWWWWWWWWWW"
-    p objArray["results"]
+
     objArray["results"].each do |result|
       meeting = Meeting.new
       members = Array.new
@@ -231,10 +248,6 @@ class CoursesController < ApplicationController
       @mygroups.each do |group| 
         if group[1]["id"] == result["id"]
           in_group = true
-          p result["id"]
-          p group[1]["id"]
-          p in_group
-          p "Already in group"
           break
         end
       end
@@ -289,7 +302,7 @@ class CoursesController < ApplicationController
     response = http.request(req)
     response.inspect
 
-    puts response.body
+    #puts response.body
     redirect_to courses_path
   end
 
@@ -336,7 +349,7 @@ class CoursesController < ApplicationController
 
     response = RestClient.post 'https://gtcollab.herokuapp.com/api/courses/' + id +'/leave/', {authorization: $token}
 
-    puts "WE GOT INTO DESTORY ::::::::::::::::::"
+
     # line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/leave/', 
 
     # require "net/http"

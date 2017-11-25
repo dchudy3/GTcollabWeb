@@ -1,10 +1,6 @@
-
-<!--<p id="notice"><%= notice %></p>-->
-<div> <%= @course.name%> </div>
-
-<h3 class = "text-center">COURSE INFO </h3>
-<h3 class = "text-center">Course internal id: <%= @course.id%> </h3>
 <h3 class = "text-center">Course name : <%= @course.name %></h3>
+<h3 class = "text-center">Course ID: <%= @course.id%> </h3>
+<h3 class = "text-center"><%= @count %> members</h3>
 
 <div>
     <div style="float:left;">
@@ -16,7 +12,7 @@
       <%= link_to 'Create Group', '#groupEntryModal', class: 'btn btn-default', 'data-toggle' => 'modal' %>
     </div>
     <div style="float:left;">
-      <%= button_to "Create Meeting", {action: "new", controller: "meetings", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
+      <%= link_to 'Create Meeting', '#meetingEntryModal', class: 'btn btn-default', 'data-toggle' => 'modal' %>
     </div>
     <div style="clear:both;">
     </div>
@@ -135,20 +131,24 @@
                 <table class="table table-hover">
                   <thead>
                       <tr>
-                          <th>Meeting Creator</th>
-                          <th>Meeting ID</th>
+                          <th>Name</th>
+                          <th>Creator</th>
+                          <th>Location</th>
+                          <th>Description</th>
+                          <th>Start Date</th>
+                          <th>Start Time</th>
+                          <th>Duration</th>
+                          <th>Members</th>
                       </tr>
                   </thead>
                   <tbody>
                     <tr>
+                        <td> <%= meeting[1]["name"]%> </td>
                         <td><%= meeting[1]["creator_firstname"] %> <%= meeting[1]["creator_lastname"] %></td>
-                        <td> <%= meeting[1]["id"] %> </td>
-
-                        <% if meeting[1]["joined"] == "true" %> 
-                          <td><%= link_to 'Add to My Course', new_meeting_path(meeting[0]) %></td>
-                        <% else %>
-                          <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
-                        <%end%>
+                        <td> <%= meeting[1]["location"]%> </td>
+                        <td> <%= meeting[1]["description"]%> </td>
+                        <td> <%= meeting[1]["start_date"]%> </td>
+                        <td> <%= meeting[1]["duration"]%> </td>
                         
                         <td>
                           <div class="pre-scrollable"> 
@@ -157,6 +157,12 @@
                           <% end %>
                           </div>
                         </td>
+                        <% if meeting[1]["joined"] == "true" %> 
+                          <td><%= link_to 'Add to My Course', new_meeting_path(meeting[0]) %></td>
+                        <% else %>
+                          <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
+                        <%end%>
+
                     </tr>
                   </tbody>
                 </table>
@@ -173,33 +179,23 @@
  
 <div id="menu2" class="tab-pane fade">
     <h3>Members</h3>
-    <div class="container">
-      <h2>Hover Rows</h2>
-      <p>The .table-hover class enables a hover state on table rows:</p>            
+    <div class="container">       
       <table class="table table-hover">
         <thead>
           <tr>
-            <th>Firstname</th>
-            <th>Lastname</th>
-            <th>Email</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>UserName</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>John</td>
-            <td>Doe</td>
-            <td>john@example.com</td>
-          </tr>
-          <tr>
-            <td>Mary</td>
-            <td>Moe</td>
-            <td>mary@example.com</td>
-          </tr>
-          <tr>
-            <td>July</td>
-            <td>Dooley</td>
-            <td>july@example.com</td>
-          </tr>
+          <% @course.members.each do |mems| %>
+            <tr>
+              <td> <%= mems["first_name"]%> </td>
+              <td><%= mems["last_name"]%> </td>
+              <td><%= mems["email"]%> </td>
+            </tr>
+          <%end%>
         </tbody>
       </table>
     </div>
@@ -207,27 +203,45 @@
 </div>
 
 <!--=================== Group =======================--> 
-<article class='group-info group'>
+
   
-  <!-- Add New group Modal -->
-  <div class="modal entry-modal fade" id="groupEntryModal" tabindex="-1" role="dialog" aria-labelledby="intakeEntryModalLabel">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="myModalLabel">Create New Group</h4>
-        </div>
-        <div class="modal-body">
-            <%= render 'groupform_modal', modal: true%>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>
-        </div>
+<!-- Add New group Modal -->
+<div class="modal entry-modal fade" id="groupEntryModal" tabindex="-1" role="dialog" aria-labelledby="groupEntryModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create New Group</h4>
+      </div>
+      <div class="modal-body">
+          <%= render 'groupform_modal', modal: true, members: @course.members, course_id: @course.id%>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
-  <!-- End Modal -->
+</div>
+<!-- End Modal -->
 
+<!-- Add New meeting Modal -->
+<div class="modal entry-modal fade" id="meetingEntryModal" tabindex="-1" role="dialog" aria-labelledby="meetingEntryModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create New Meeting</h4>
+      </div>
+      <div class="modal-body">
+          <%= render 'meetingform_modal', modal: true, members: @course.members, course_id: @course.id%>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Modal -->
 
 
 
