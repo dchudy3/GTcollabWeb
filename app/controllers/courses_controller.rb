@@ -138,12 +138,14 @@ class CoursesController < ApplicationController
 
 
     ############# MEETING DATA ##################
+    #get the user's meetings
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
+    p "SO WOWWWWWWWWWWWWWW"
     p objArray["results"]
     objArray["results"].each do |result|
       meeting = Meeting.new
-
+      members = Array.new
       meeting.name = result["name"]
       meeting.id = result["id"]
       meeting.location = result["location"]
@@ -151,6 +153,11 @@ class CoursesController < ApplicationController
       meeting.start_date = result["start_date"]
       meeting.start_time = result["start_time"]
       meeting.duration = result["duration"]
+
+      result["members"].each do |member|
+        members << member
+      end
+      meeting.members = members
       hash = meeting.as_json
 
       @mymeetings[hash["id"]] = hash
@@ -159,10 +166,18 @@ class CoursesController < ApplicationController
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?course=' + course_id, {authorization: $token}
     objArray = JSON.parse(response.body)
+    in_meeting = false
 
     objArray["results"].each do |result|
-      meeting = Meeting.new
+      @mymeetings.each do |meet| 
+        if meet[1]["id"] == result["id"]
+          in_meeting = true
+          break
+        end
+      end
 
+      meeting = Meeting.new
+      members = Array.new
       meeting.name = result["name"]
       meeting.id = result["id"]
       meeting.location = result["location"]
@@ -170,6 +185,13 @@ class CoursesController < ApplicationController
       meeting.start_date = result["start_date"]
       meeting.start_time = result["start_time"]
       meeting.duration = result["duration"]
+      result["members"].each do |member|
+        members << member
+      end
+      if in_meeting
+        meeting.joined = true
+      end
+      meeting.members = members
       hash = meeting.as_json
 
       @meetings[hash["id"]] = hash

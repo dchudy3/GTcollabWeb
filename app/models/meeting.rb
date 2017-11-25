@@ -15,6 +15,7 @@ class Meeting
   attr_accessor :creator_lastname
   attr_accessor :creator_email
   attr_accessor :members
+  attr_accessor :joined
   
 # "id": 243,
 # "name": "Exercise 9 Help",

@@ -53,6 +53,7 @@ class MeetingsController < ApplicationController
     @meeting.creator_firstname = objArray["creator"]["first_name"]
     @meeting.creator_lastname = objArray["creator"]["last_name"]
     @meeting.creator_email = objArray["creator"]["email"]
+    
     objArray["members"].each do |member|
       members << member
     end
