@@ -58,7 +58,6 @@ class GroupsController < ApplicationController
 
 
   def new
-    puts "in add"
     id =  params[:format]
     line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/join/"
     
@@ -86,8 +85,6 @@ class GroupsController < ApplicationController
 
   #create new group
   def newGroup
-    p 'CREATE MAGIC--------------------'
-    p group_params
     @group = Group.new(group_params)
 
     respond_to do |format|
@@ -175,7 +172,11 @@ class GroupsController < ApplicationController
     req.add_field("authorization", $token)
 
     response = http.request(req)
-    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+    if params[:index].to_s == "true"
+      redirect_to courses_path
+    else
+      redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+    end
   end
 
   private

@@ -44,7 +44,7 @@ class CoursesController < ApplicationController
     ## Get users specifc classes
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p objArray
+
     objArray["results"].each do |result|
       course = Course.new
       course.name = result["name"]
@@ -60,12 +60,18 @@ class CoursesController < ApplicationController
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |result|
+      response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses/' + result["course"].to_s, {authorization: $token}
+      course_info = JSON.parse(response.body)
+      
       group = Group.new
 
       group.name = result["name"]
       group.id = result["id"]
       group.creator_firstname = result["creator"]["first_name"]
       group.creator_lastname = result["creator"]["last_name"]
+      group.joined = true
+      group.course_id = result["course"]
+      group.course_name = course_info["name"]
       hash = group.as_json
 
       @mygroups[hash["id"]] = hash
@@ -76,6 +82,9 @@ class CoursesController < ApplicationController
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |result|
+      
+      response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses/' + result["course"].to_s, {authorization: $token}
+      course_info = JSON.parse(response.body)
       meeting = Meeting.new
 
       meeting.name = result["name"]
@@ -85,6 +94,9 @@ class CoursesController < ApplicationController
       meeting.start_date = result["start_date"]
       meeting.start_time = result["start_time"]
       meeting.duration = result["duration"]
+      meeting.course_id = result["course"]
+      meeting.joined = true
+      meeting.course_name = course_info["name"]
       hash = meeting.as_json
 
       @mymeetings[hash["id"]] = hash
@@ -192,7 +204,6 @@ class CoursesController < ApplicationController
       @mymeetings.each do |meet| 
         if meet[1]["id"] == result["id"]
           in_meeting = true
-          p "In meeting"
           break
         end
       end
@@ -206,6 +217,11 @@ class CoursesController < ApplicationController
       meeting.start_date = result["start_date"]
       meeting.start_time = result["start_time"]
       meeting.duration = result["duration"]
+      meeting.creator_username = result["creator"]["username"]
+      meeting.creator_firstname = result["creator"]["first_name"]
+      meeting.creator_lastname = result["creator"]["last_name"]
+      meeting.creator_email = result["creator"]["email"]
+
       result["members"].each do |member|
         members << member
       end
@@ -253,7 +269,6 @@ class CoursesController < ApplicationController
       @mygroups.each do |group| 
         if group[1]["id"] == result["id"]
           in_group = true
-          p "in group"
           break
         end
       end
@@ -347,8 +362,6 @@ class CoursesController < ApplicationController
   #Course Controller
   #Leave a course
   def destroy 
-    p "destroy"
-    p params[:id]
     id =  params[:id]
 
     line = 'https://gtcollab.herokuapp.com/api/courses/' + id + '/leave/'
