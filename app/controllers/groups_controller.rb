@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :set_group, only: [:show, :edit, :update]
-   skip_before_action :verify_authenticity_token, :only => [:joinGroup, :create, :new]
+   skip_before_action :verify_authenticity_token, :only => [:joinGroup, :create, :newGroup]
   # GET /groups
   # GET /groups.json
   def index
@@ -86,26 +86,19 @@ class GroupsController < ApplicationController
 
   #create new group
   def newGroup
-    id =  params[:id]
-    line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/join/"
-    
-    #puts line
-    #puts $token
+    p 'CREATE MAGIC--------------------'
+    p group_params
+    @group = Group.new(group_params)
 
-    require "net/http"
-    require "uri"
-
-    parsed_url = URI.parse(line)
-
-    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
-    http.use_ssl = true
-
-    req = Net::HTTP::Post.new(parsed_url.request_uri)
-
-    req.add_field("authorization", $token)
-
-    response = http.request(req)
-    response.inspect
+    respond_to do |format|
+      if @group.save
+        format.html { redirect_to @group, notice: 'Group was successfully created.' }
+        format.json { render :show, status: :created, location: @group }
+      else
+        format.html { render :new }
+        format.json { render json: @group.errors, status: :unprocessable_entity }
+      end
+    end
 
     #puts response.body
     redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
@@ -143,20 +136,9 @@ class GroupsController < ApplicationController
   end
   # POST /groups
   # POST /groups.json
-  def create
-    p 'CREATE MAGIC--------------------'
-    @group = Group.new(group_params)
+  #def create
 
-    respond_to do |format|
-      if @group.save
-        format.html { redirect_to @group, notice: 'Group was successfully created.' }
-        format.json { render :show, status: :created, location: @group }
-      else
-        format.html { render :new }
-        format.json { render json: @group.errors, status: :unprocessable_entity }
-      end
-    end
-  end
+  #end
 
   # PATCH/PUT /groups/1
   # PATCH/PUT /groups/1.json
@@ -204,6 +186,6 @@ class GroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
-      params.fetch(:group, {})
+      params.require(:group).permit(:name, :email, :course_id, :creator_id, :creator_username, :creator_firstname, :creator_lastname, :creator_email, :members)
     end
 end

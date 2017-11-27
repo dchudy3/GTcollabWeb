@@ -231,7 +231,7 @@
         <h4 class="modal-title" id="myModalLabel">Create New Group</h4>
       </div>
       <div class="modal-body">
-          <%= render 'groupform_modal', modal: true, members: @course.members, course_id: @course.id%>
+          <%= render 'groupform_modal', modal: true, members: @course.members, course_id: @course.id, new_group: Group.new, creator_lastname: $user_last, creator_firstname: $user_first, creator_email: $user_email, creator_id: $user_id, course_id: @course.id, creator_username: $user_name%>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>
@@ -250,7 +250,7 @@
         <h4 class="modal-title" id="myModalLabel">Create New Meeting</h4>
       </div>
       <div class="modal-body">
-          <%= render 'meetingform_modal', modal: true, members: @course.members, course_id: @course.id%>
+          <%= render 'meetingform_modal', modal: true, members: @course.members, new_meeting: Meeting.new, creator_lastname: $user_last, creator_firstname: $user_first, creator_email: $user_email, creator_id: $user_id, course_id: @course.id, creator_username: $user_name%>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default entry-cancelbtn" data-dismiss="modal">Close</button>

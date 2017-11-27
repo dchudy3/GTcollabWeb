@@ -9,17 +9,19 @@ Rails.application.routes.draw do
 	get '/groups/edit'
 	get '/groups/joinGroup'
 	
-	#post '/groups', to: "groups#newGroup"
+	post '/groups/create', to: "groups#newGroup"
 	post '/groups', to: "groups#editGroup"
 	post '/groups/:id', to: "groups#joinGroup"
+
 
 	post '/courses/:id', to: "courses#new"
 
 	get '/meetings/new'
+	get '/meetings/create'
 	get '/meetings/edit'
 	get '/meetings/joinMeeting'
 	
-	post '/meetings', to: "meetings#newMeeting"
+	post '/meetings/create', to: "meetings#newMeeting"
 	post '/meetings', to: "meetings#editMeeting"
 	post '/meetings/:id', to: "meetings#joinMeeting"
 	#get '/courses/'

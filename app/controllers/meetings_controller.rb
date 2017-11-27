@@ -69,7 +69,7 @@ class MeetingsController < ApplicationController
 
   # POST /meetings
   # POST /meetings.json
-  def create
+  def newMeeting
     @meeting = Meeting.new(meeting_params)
 
     respond_to do |format|
@@ -156,6 +156,6 @@ class MeetingsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def meeting_params
-      params.fetch(:meeting, {})
+      params.require(:meeting).permit(:name, :email, :course_id, :creator_id, :creator_username, :creator_firstname, :creator_lastname, :creator_email, :members)
     end
 end

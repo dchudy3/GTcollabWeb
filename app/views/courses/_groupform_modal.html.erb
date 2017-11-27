@@ -1,18 +1,17 @@
 <% modal ||= false %>
 <% remote = modal ? true : false %>
 
-<%= form_tag("/groups", method: :create) do %>
+<%= form_for(new_group, remote: remote, url: url_for(action: 'create', controller: 'groups', method: 'get'))      do |f| %>    
 
-    <%= hidden_field_tag "course_id", course_id%>
-
-    <%= label_tag "Name"%>
-    <%= text_field_tag :name, "", class: 'form-control' %>
-
-    <%= text_field_tag :creator_username , "", class: "hidden-member", style: "display:none;" %>
-
-    <%= text_field_tag :creator_lastname , "", class: "hidden-member", style: "display:none;" %>
-
-    <%= text_field_tag :creator_email , "", class: "hidden-member", style: "display:none;" %>
+    <%= f.label :name %>
+    <%= f.text_field :name, class: 'form-control required'  %>
+    
+    <%= f.hidden_field :course_id, value: course_id%>
+    <%= f.hidden_field :creator_username, value: creator_username%>
+    <%= f.hidden_field :creator_lastname, value: creator_lastname%>
+    <%= f.hidden_field :creator_firstname, value: creator_firstname%>
+    <%= f.hidden_field :creator_email, value: creator_email%>
+    <%= f.hidden_field :creator_id, value: creator_id%>
 
     <%= label :post, "Members" %>
     <div class="dropdown">
@@ -28,12 +27,7 @@
 
     <%= text_field_tag 'member', "", class: "hidden-member", style: "display:none;"  %>
 
-
-    <div id = "member-list"></div>
-
-    <%= text_field_tag 'members', "", class: "hidden-member", style: "display:none;"  %>
-
-    <%= submit_tag "Create", class: "btn btn-primary"%>
+    <%= f.submit "Create", class: "btn btn-primary submit-btn" %>
 <% end %>
 
 <script>
