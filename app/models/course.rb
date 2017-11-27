@@ -5,6 +5,7 @@ class Course
   attr_accessor :id
   attr_accessor :course_number
   attr_accessor :members
+  attr_accessor :joined
 
   validates :name, presence: true
 

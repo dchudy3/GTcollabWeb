@@ -1,6 +1,6 @@
 class MeetingsController < ApplicationController
   before_action :set_meeting, only: [:show, :edit, :update, :destroy]
-
+  skip_before_action :verify_authenticity_token, :only => [:joinMeeting, :createMeeting]
   # GET /meetings
   # GET /meetings.json
   def index
@@ -100,13 +100,54 @@ class MeetingsController < ApplicationController
   # DELETE /meetings/1
   # DELETE /meetings/1.json
   def destroy
-    @meeting.destroy
-    respond_to do |format|
-      format.html { redirect_to meetings_url, notice: 'Meeting was successfully destroyed.' }
-      format.json { head :no_content }
-    end
+    require "net/http"
+    require "uri"
+
+    id =  params[:id]
+    line = "https://gtcollab.herokuapp.com/api/meetings/" + id + "/leave/"
+    puts line
+    puts $token
+
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
   end
 
+  def joinMeeting
+    puts params
+    id =  params[:id]
+    line = "https://gtcollab.herokuapp.com/api/meetings/" + id + "/join/"
+    
+    #puts line
+    #puts $token
+
+    require "net/http"
+    require "uri"
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    response.inspect
+
+    #puts response.body
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+  end
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_meeting

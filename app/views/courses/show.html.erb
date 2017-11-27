@@ -4,8 +4,11 @@
 
 <div>
     <div style="float:left;">
-    <td><%= link_to 'Add to My Course', new_course_path(@course.id), :class => 'btn btn-default' , :style => "color:white" %></td>
-
+    <% if @in_course.to_s != 'true'%> 
+      <td><%= link_to 'Add to My Course', new_course_path(@course.id), :class => 'btn btn-default' , :style => "color:white" %></td>
+    <% else%> 
+      <td><%= button_to 'Leave Class',  { action: :destroy, id: @course.id}, class: "btn btn-primary", method: :delete, data: { confirm: 'Are you sure?' }%></td>
+    <% end%> 
     </div>
     <div style="float:left;">
       <%#= button_to "Create Group", {action: "new", controller: "groups", id: @course.id, remote: true}, {class: 'btn btn-default'} %>
@@ -38,7 +41,7 @@
         
         <% @groups.each do |group| %>
 
-          <% if group[1]["joined"] == "true" %> 
+          <% if group[1]["joined"].to_s == "true" %> 
             
             <div class="panel panel-success">
               <div class="panel-heading" >
@@ -58,6 +61,7 @@
 
             <div id= "mygroup<%= group[1]["id"] %>" class="panel-collapse collapse"">
               <div class="panel-body">
+                <div class="table-responsive">
                 <table class="table table-hover">
                   <thead>
                       <tr>
@@ -70,11 +74,16 @@
                         <td><%= group[1]["creator_firstname"] %> <%= group[1]["creator_lastname"] %></td>
                         <td> <%= group[1]["id"] %> </td>
 
-                        <% if group[1]["joined"] == "true" %> 
-                          <td><%= buttonk_to 'Remove from me from group', group_path(group[0]),
+                        <% if group[1]["joined"].to_s == "true" %> 
+                          <td><%= button_to 'Remove from me from group', group_path(group[0], :course_id => @course.id.to_s, :name => @course.name.to_s, :joined => @in_course.to_s),
                             data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
                         <% else %>
-                          <td><%= button_to 'Show Details', group_path(group[0]) %></td>
+                          <td>
+
+                            <%= button_to 'Join', group_path(group[0], :course_id => @course.id.to_s, :name => @course.name.to_s, :joined => @in_course.to_s),
+                            data: {:confirm => 'Are you sure?'}, :method => :joinGroup %></td>
+
+                          </td>
                         <%end%>
                         
                         <td>
@@ -87,6 +96,7 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
               </div>
             </div>
           </div>         
@@ -108,7 +118,7 @@
         
         <% @meetings.each do |meeting| %>
 
-          <% if meeting[1]["joined"] == "true" %> 
+          <% if meeting[1]["joined"].to_s == "true" %> 
             
             <div class="panel panel-success">
               <div class="panel-heading" >
@@ -128,6 +138,7 @@
 
             <div id= "mymeeting<%= meeting[1]["id"] %>" class="panel-collapse collapse"">
               <div class="panel-body">
+                <div class="table-responsive">
                 <table class="table table-hover">
                   <thead>
                       <tr>
@@ -148,24 +159,28 @@
                         <td> <%= meeting[1]["location"]%> </td>
                         <td> <%= meeting[1]["description"]%> </td>
                         <td> <%= meeting[1]["start_date"]%> </td>
+                        <td> <%= meeting[1]["start_time"]%> </td>
                         <td> <%= meeting[1]["duration"]%> </td>
                         
                         <td>
                           <div class="pre-scrollable"> 
                           <% meeting[1]["members"].each do |mem|%>
-                            <h5><%= "John" + mem.to_s + " Smith" + mem.to_s %></h5>
+                            <h5><%= mem.to_s%></h5>
                           <% end %>
                           </div>
                         </td>
-                        <% if meeting[1]["joined"] == "true" %> 
-                          <td><%= link_to 'Add to My Course', new_meeting_path(meeting[0]) %></td>
+                        <% if meeting[1]["joined"].to_s != "true" %> 
+                          <td><%= button_to 'Join Meeting', meeting_path(meeting[0], :course_id => @course.id.to_s, :name => @course.name.to_s, :joined => @in_course.to_s),
+                            data: {:confirm => 'Are you sure?'}, :method => :joinMeeting %></td>
                         <% else %>
-                          <td><%= link_to 'Show', meeting_path(meeting[0]) %></td>
+                          <td><%= button_to 'Leave Meeting', meeting_path(meeting[0], :course_id => @course.id.to_s, :name => @course.name.to_s, :joined => @in_course.to_s),
+                            data: {:confirm => 'Are you sure?'}, :method => :delete %></td>
                         <%end%>
 
                     </tr>
                   </tbody>
                 </table>
+              </div>
               </div>
             </div>
           </div>         
@@ -180,6 +195,7 @@
 <div id="menu2" class="tab-pane fade">
     <h3>Members</h3>
     <div class="container">       
+      <div class="table-responsive">
       <table class="table table-hover">
         <thead>
           <tr>
@@ -198,6 +214,7 @@
           <%end%>
         </tbody>
       </table>
+    </div>
     </div>
 </div>  
 </div>

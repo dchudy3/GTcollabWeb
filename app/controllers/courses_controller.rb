@@ -27,10 +27,6 @@ class CoursesController < ApplicationController
     @mygroups = Hash.new
     @mymeetings = Hash.new
     course_id = ""
-    ### get all classes
-
-    ##response = RestClient.get 'https://secure-headland-60131.herokuapp.com/api/courses?subject__term=1&members=11',  {authorization: $token}
-
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
     objArray = JSON.parse(response.body)
@@ -40,6 +36,7 @@ class CoursesController < ApplicationController
       course.name = result["name"]
       course.id = result["id"]
       course.course_number = result["course_number"]
+      course.joined = false
       hash = course.as_json
       @courses[hash["id"]] = hash
     end
@@ -47,11 +44,12 @@ class CoursesController < ApplicationController
     ## Get users specifc classes
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
-
+    p objArray
     objArray["results"].each do |result|
       course = Course.new
       course.name = result["name"]
       course.id = result["id"]
+      course.joined = true
       course.course_number = result["course_number"]
       hash = course.as_json
       @mycourses[hash["id"]] = hash
@@ -122,6 +120,11 @@ class CoursesController < ApplicationController
 
     course_id = params[:id]
 
+    #p "SHOWWWWWWWWWWWW"
+    #p params
+    #p params[:joined]
+    @in_course = params[:joined].to_s
+
     @mygroups = Hash.new
     @groups = Hash.new
 
@@ -131,14 +134,14 @@ class CoursesController < ApplicationController
     ##### COURSE DATA #############
     @course = Course.new
     @course.id = params[:id]
-    @course.name = params[:format]
+    @course.name = params[:name]
 
 
     #Getting course members
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/users/?courses_as_member=' + @course.id, {authorization: $token}
     objArray = JSON.parse(response.body)
-    p "COUNTTT"
-    p objArray["count"]
+    #p "COUNTTT"
+    #p objArray["count"]
     @count = objArray["count"].to_s
 
     mem_list = Array.new
@@ -147,8 +150,8 @@ class CoursesController < ApplicationController
       mem_list << member
     end
     @course.members = mem_list
-    p "TESTING COUSE!!!!"
-    p @course
+    #p "TESTING COUSE!!!!"
+    #p @course
     #################################
 
     ####### MEMBER DATA ####
@@ -182,13 +185,14 @@ class CoursesController < ApplicationController
 
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/?course=' + course_id, {authorization: $token}
-    objArray = JSON.parse(response.body)
+    objArray2 = JSON.parse(response.body)
     in_meeting = false
 
-    objArray["results"].each do |result|
+    objArray2["results"].each do |result|
       @mymeetings.each do |meet| 
         if meet[1]["id"] == result["id"]
           in_meeting = true
+          p "In meeting"
           break
         end
       end
@@ -212,12 +216,13 @@ class CoursesController < ApplicationController
       hash = meeting.as_json
 
       @meetings[hash["id"]] = hash
+      in_meeting = false
     end
     ###########################################
 
     ############# Group DATA ##################
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups?course=' + course_id, {authorization: $token}
-    objArray = JSON.parse(response.body)
+    objArray1= JSON.parse(response.body)
     #p objArray["results"]
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/?course=' + course_id + "&members=" + $user_id, {authorization: $token}
@@ -243,47 +248,43 @@ class CoursesController < ApplicationController
 
     #check which groups I am in
     in_group = false
-    objArray["results"].each do |result|
+    objArray1["results"].each do |result|
       #make sure no duplicate groups
       @mygroups.each do |group| 
         if group[1]["id"] == result["id"]
           in_group = true
+          p "in group"
           break
         end
       end
       
-      #if I am not in this group yet
-      #if !(in_group)
-        group = Group.new
-        members = Array.new
-        group.name = result["name"]
-        group.id = result["id"]
-        group.creator_firstname = result["creator"]["first_name"]
-        group.creator_lastname = result["creator"]["last_name"]
-        result["members"].each do |member|
-          members << member
-        end
-        if in_group
-          group.joined = true
-        end
-        group.members = members
-        hash = group.as_json
+      group = Group.new
+      members = Array.new
+      group.name = result["name"]
+      group.id = result["id"]
+      group.creator_firstname = result["creator"]["first_name"]
+      group.creator_lastname = result["creator"]["last_name"]
+      result["members"].each do |member|
+        members << member
+      end
+      if in_group
+        group.joined = true
+      end
+      group.members = members
+      hash = group.as_json
 
-        @groups[hash["id"]] = hash
+      @groups[hash["id"]] = hash
       #end
-      
+      in_group = false
     end
     ############################################
   end
 
   # GET /courses/new
-# curl --request GET \
-#   --url 'https://secure-headland-60131.herokuapp.com/api/meetings/?course=677' \
-#   --header 'authorization: Token ae58c6766f9152f8ffe0a143382f4121fbf6e3cb'
-  ######## API call add this course to our assigned courses (API)
-  # URL: /api/courses/:id/join
+  #Course Controller
+  #Join a course
 
-  def new   ## 401 not Authorized?
+  def new  
     id =  params[:format]
     line = 'https://gtcollab.herokuapp.com/api/courses/' + id + '/join/'
 
@@ -302,7 +303,6 @@ class CoursesController < ApplicationController
     response = http.request(req)
     response.inspect
 
-    #puts response.body
     redirect_to courses_path
   end
 
@@ -344,30 +344,30 @@ class CoursesController < ApplicationController
   # DELETE /courses/1
   # DELETE /urses/1.json
   # /api/courses/:id/leave
-  def destroy ## 401 not Authorized?
+  #Course Controller
+  #Leave a course
+  def destroy 
+    p "destroy"
+    p params[:id]
     id =  params[:id]
 
-    response = RestClient.post 'https://gtcollab.herokuapp.com/api/courses/' + id +'/leave/', {authorization: $token}
+    line = 'https://gtcollab.herokuapp.com/api/courses/' + id + '/leave/'
 
+    require "net/http"
+    require "uri"
 
-    # line = 'https://secure-headland-60131.herokuapp.com/api/courses/' + id + '/leave/', 
+    parsed_url = URI.parse(line)
 
-    # require "net/http"
-    # require "uri"
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
 
-    # parsed_url = URI.parse(line)
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
 
-    # http = Net::HTTP.new(parsed_url.host, parsed_url.port)
-    # http.use_ssl = true
+    req.add_field("authorization", $token)
 
-    # req = Net::HTTP::Post.new(parsed_url.request_uri)
+    response = http.request(req)
+    response.inspect
 
-    # req.add_field("authorization", $token)
-
-    # response = http.request(req)
-    # response.inspect
-
-    # puts response.body
     redirect_to courses_path
   end
 

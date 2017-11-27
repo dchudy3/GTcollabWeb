@@ -28,8 +28,13 @@ class LoginController < ApplicationController
 			response = RestClient.get 'https://gtcollab.herokuapp.com/api/users/?username=' + username, {authorization: $token}
 	    	#p "we got here?"
 	    	objArray = JSON.parse(response.body)
-	    	#p objArray
+	    	p "LOG IN!!!!!!!!"
+	    	p objArray
 	    	$user_id = objArray["results"][0]["id"].to_s
+	    	$user_name = objArray["results"][0]["username"].to_s
+	    	$user_first = objArray["results"][0]["first_name"].to_s
+	    	$user_last = objArray["results"][0]["last_name"].to_s
+	    	$user_email = objArray["results"][0]["email"].to_s
 	    	#p $user_id
 	    	#p $user_id.class
 	    	#puts $user_id

@@ -1,7 +1,7 @@
 <% modal ||= false %>
 <% remote = modal ? true : false %>
 
-<%= form_tag("group", method: "new") do %>
+<%= form_tag("meeting", method: "create") do %>
     
     <%= hidden_field_tag "course_id", course_id%>
 
@@ -35,18 +35,18 @@
       <span class="caret"></span></button>
       <ul class="dropdown-menu">
         <% members.each do |b| %>
-          <li  class = "member-dd-item" id = "member-dd-<%= b["id"] %>"><a href="#" class= "member-dd-item" value = '<%= b["id"]%>'> <%= b["first_name"]%> <%= b["first_name"] %></a>  </li> 
+          <li  class = "member1-dd-item" id = "member1-dd-<%= b["id"] %>"><a href="#" class= "member1-dd-item" value = '<%= b["id"]%>'> <%= b["first_name"]%> <%= b["first_name"] %></a>  </li> 
         <% end %>
       </ul>
     </div>           
-    <div id = "member-list"></div>
+    <div id = "member1-list"></div>
 
-    <%= text_field_tag 'member', "", class: "hidden-member", style: "display:none;"  %>
+    <%= text_field_tag 'member', "", class: "hidden-member1", style: "display:none;"  %>
 
 
-    <div id = "member-list"></div>
+    <div id = "member1-list"></div>
 
-    <%= text_field_tag 'members', "", class: "hidden-member", style: "display:none;"  %>
+    <%= text_field_tag 'members', "", class: "hidden-member1", style: "display:none;"  %>
 
     <%= submit_tag "Create Meeting", class: "btn btn-primary"%>
 <% end %>
@@ -62,7 +62,7 @@
     format: 'LT',
     
   });
-      $(".member-dd-item").on("click", function(e){
+      $(".member1-dd-item").on("click", function(e){
     
     e.stopPropagation();
     e.preventDefault();
@@ -71,14 +71,14 @@
     if(text == "Select Assignee"){
       return
     }
-    html = $("#member-list").html();
-    html += "<div id = 'member-" + val + "'' class = 'member-item select-item' style = 'position: relative; display: inline-block;'>" 
+    html = $("#member1-list").html();
+    html += "<div id = 'member1-" + val + "'' class = 'member1-item select-item' style = 'position: relative; display: inline-block;'>" 
         + "<p style = 'margin:0px; padding-right:15px'>" + text + "</p>" + 
-       "<span class = 'glyphicon glyphicon-remove remove-member remove-item' style='margin:2px; float:right;'>" +"</span>" + 
+       "<span class = 'glyphicon glyphicon-remove remove-member1 remove-item' style='margin:2px; float:right;'>" +"</span>" + 
        " </div>"
-    $("#member-list").html(html);
-    $(".remove-member").on("click", function(){
-      $(this).closest(".member-item").detach()
+    $("#member1-list").html(html);
+    $(".remove-member1").on("click", function(){
+      $(this).closest(".member1-item").detach()
       setHiddenMember();
     })
     //just for now while im setting up the new breeds
@@ -87,12 +87,12 @@
   })
   function setHiddenMember(){
     str = ""
-    $(".member-dd-item").show();
-    $(".member-item").each(function(){
+    $(".member1-dd-item").show();
+    $(".member1-item").each(function(){
       var id = this.id.split("-")[1]
-      $("#member-dd-" +id).hide();
+      $("#member1-dd-" +id).hide();
       str += id + "|"
     })
-    $(".hidden-member").val(str)
+    $(".hidden-member1").val(str)
   }
 </script>

@@ -1,7 +1,7 @@
 <% modal ||= false %>
 <% remote = modal ? true : false %>
 
-<%= form_tag("group", method: "create") do %>
+<%= form_tag("/groups", method: :create) do %>
 
     <%= hidden_field_tag "course_id", course_id%>
 
@@ -20,7 +20,7 @@
       <span class="caret"></span></button>
       <ul class="dropdown-menu">
         <% members.each do |b| %>
-          <li  class = "member-dd-item" id = "member-dd-<%= b["id"] %>"><a href="#" class= "member-dd-item" value = '<%= b["id"]%>'> <%= b["first_name"]%> <%= b["first_name"] %></a>  </li> 
+          <li class = "member-dd-item" id = "member-dd-<%= b["id"] %>"><a href="#" class= "member-dd-item" value = '<%= b["id"]%>'> <%= b["first_name"]%> <%= b["first_name"] %></a>  </li> 
         <% end %>
       </ul>
     </div>           
@@ -33,7 +33,7 @@
 
     <%= text_field_tag 'members', "", class: "hidden-member", style: "display:none;"  %>
 
-    <%= submit_tag "Create Group", class: "btn btn-primary"%>
+    <%= submit_tag "Create", class: "btn btn-primary"%>
 <% end %>
 
 <script>

@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   before_action :set_group, only: [:show, :edit, :update]
-
+   skip_before_action :verify_authenticity_token, :only => [:joinGroup, :create, :new]
   # GET /groups
   # GET /groups.json
   def index
@@ -61,8 +61,9 @@ class GroupsController < ApplicationController
     puts "in add"
     id =  params[:format]
     line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/join/"
-    puts line
-    puts $token
+    
+    #puts line
+    #puts $token
 
     require "net/http"
     require "uri"
@@ -79,11 +80,59 @@ class GroupsController < ApplicationController
     response = http.request(req)
     response.inspect
 
-    puts response.body
+    #puts response.body
     redirect_to courses_path
   end
 
+  #create new group
   def newGroup
+    id =  params[:id]
+    line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/join/"
+    
+    #puts line
+    #puts $token
+
+    require "net/http"
+    require "uri"
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    response.inspect
+
+    #puts response.body
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+  end
+  
+  #Group Controller
+  #Join a Group
+  def joinGroup
+    id =  params[:id]
+    line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/join/"
+    
+    require "net/http"
+    require "uri"
+
+    parsed_url = URI.parse(line)
+
+    http = Net::HTTP.new(parsed_url.host, parsed_url.port)
+    http.use_ssl = true
+
+    req = Net::HTTP::Post.new(parsed_url.request_uri)
+
+    req.add_field("authorization", $token)
+
+    response = http.request(req)
+    response.inspect
+
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
   end
 
   # GET /groups/1/edit
@@ -95,6 +144,7 @@ class GroupsController < ApplicationController
   # POST /groups
   # POST /groups.json
   def create
+    p 'CREATE MAGIC--------------------'
     @group = Group.new(group_params)
 
     respond_to do |format|
@@ -124,15 +174,14 @@ class GroupsController < ApplicationController
 
   # DELETE /groups/1
   # DELETE /groups/1.json
+  #Groups Controller 
+  #Leave Group
   def destroy
     require "net/http"
     require "uri"
 
     id =  params[:id]
     line = "https://gtcollab.herokuapp.com/api/groups/" + id + "/leave/"
-    puts line
-    puts $token
-
 
     parsed_url = URI.parse(line)
 
@@ -144,11 +193,7 @@ class GroupsController < ApplicationController
     req.add_field("authorization", $token)
 
     response = http.request(req)
-    # p "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
-    # p response.inspect
-
-    # puts response.body
-    redirect_to courses_path
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
   end
 
   private
