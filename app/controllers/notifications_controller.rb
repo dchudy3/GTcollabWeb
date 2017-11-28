@@ -24,35 +24,35 @@ class NotificationsController < ApplicationController
         @standard_messages << @standard_message
     end
 
-    # response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-notifications?recipients=' + $user_id, {authorization: $token}
-    # objArray = JSON.parse(response.body)
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-notifications?recipients=' + $user_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
 
-    # p " DAN ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
-    # objArray["results"].each do |noti|
-    #     @group_message = Message.new
-    #     @group_message.id = noti["id"]
-    #     @group_message.group_id = noti["group"]
-    #     @group_message.content = noti["message"]
-    #     @group_message.time = noti["timestamp"]
-    #     @group_message.creator = noti['creator']["username"]
-    #     @group_message.creator_id = noti['creator']["id"]
-    #     @group_messages << @group_message
-    # end
-    # p objArray
+    p " DAN ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+    objArray["results"].each do |noti|
+        @group_message = Message.new
+        @group_message.id = noti["id"]
+        @group_message.group_id = noti["group"]
+        @group_message.content = noti["message"]
+        @group_message.time = noti["timestamp"]
+        @group_message.creator = noti['creator']["username"]
+        @group_message.creator_id = noti['creator']["id"]
+        @group_messages << @group_message
+    end
+    p objArray
 
-    # response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-notifications?recipients=' + $user_id, {authorization: $token}
-    # objArray = JSON.parse(response.body)
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-notifications?recipients=' + $user_id, {authorization: $token}
+    objArray = JSON.parse(response.body)
 
-    # objArray["results"].each do |noti|
-    #     @meeting_message = Message.new
-    #     @meeting_message.id = noti["id"]
-    #             @meeting_message.group_id = noti["meeting"]
-    #     @meeting_message.content = noti["message"]
-    #     @meeting_message.time = noti["timestamp"]
-    #     @meeting_message.creator = noti['creator']["username"]
-    #     @meeting_message.creator_id = noti['creator']["id"]
-    #     @meeting_messages << @meeting_message
-    # end
+    objArray["results"].each do |noti|
+        @meeting_message = Message.new
+        @meeting_message.id = noti["id"]
+                @meeting_message.group_id = noti["meeting"]
+        @meeting_message.content = noti["message"]
+        @meeting_message.time = noti["timestamp"]
+        @meeting_message.creator = noti['creator']["username"]
+        @meeting_message.creator_id = noti['creator']["id"]
+        @meeting_messages << @meeting_message
+    end
 
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-invitations?recipients=' + $user_id, {authorization: $token}
