@@ -44,28 +44,21 @@
 <!--                     <ul class="nav navbar-nav navbar-right">
                       <li><a href="#">1</a></li>
                     </ul> -->
-            <%= link_to(notification_check_path()) do %>
-                    <ul class="nav navbar-nav navbar-right">
-                      <button type="button" class="btn btn-default btn-sm">
 
+                    <ul class="nav navbar-nav navbar-right">
+                    <%= link_to(notification_check_path()) do %>
+                      <button type="button" class="btn btn-default btn-sm">
                         <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-
                       </button>
+                      <% end %>
+
+                       <%= link_to(notification_path()) do %>
+                        <button type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-bell" aria-hidden="true"><%= @num_alerts != nil ? @num_alerts : 0 %></span>
+                        </button>
+                      <% end %>
                     </ul>
-            <% end  %>
-
-
-            <%= link_to(notification_path()) do %>
-                    <ul class="nav navbar-nav navbar-right">
-                      <button type="button" class="btn btn-default btn-sm">
-
-                        <span class="glyphicon glyphicon-bell" aria-hidden="true"><%= @num_alerts != nil ? @num_alerts : 0 %></span>
-
-                      </button>
-                    </ul>
-            <% end  %>
-
                   </div>
-                  <%end %>
+                <% end %>
                 </div>
               </nav>

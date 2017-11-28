@@ -55,8 +55,17 @@ class GroupsController < ApplicationController
 
     mem_list = Array.new
 
+    p members
     objArray["results"].each do |member|
-      mem_list << member
+      p member["id"].to_i
+      if members.include? member["id"].to_i
+        p member["id"].to_i
+        p "not in memeber <-"
+      else
+        p member["id"].to_i
+        p "in memeber <-"
+        mem_list << member
+      end
     end
     @all_members = mem_list
 
@@ -216,6 +225,28 @@ class GroupsController < ApplicationController
     end
   end
 
+  def send_message
+    p "IN SNED MESSAGE"
+    p params
+    p params[:content]
+
+    begin
+      p "are we ok?"
+      # will need to change to full delete
+      response = RestClient.post "https://gtcollab.herokuapp.com/api/group-messages/", {:content => params[:content], :group => params[:id]} ,{authorization: $token}
+      
+      p "are we ok?"
+      objArray = JSON.parse(response.body)
+      p objArray
+      p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response
+      p e.response.body
+    end
+    redirect_to group_path(params[:id], :name => params[:name], :joined => params[:joined])
+  end
   # DELETE /groups/1
   # DELETE /groups/1.json
   #Groups Controller 
@@ -246,7 +277,7 @@ class GroupsController < ApplicationController
       p e.response.body
     end
 
-    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+    redirect_to group_path(params[:group_id], :name => params[:name], :joined => params[:joined])
   end
 
   def delete

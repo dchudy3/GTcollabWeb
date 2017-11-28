@@ -1,35 +1,144 @@
 <p id="notice"><%= notice %></p>
 
 
+<br>
+<br>
 
+  <div class="row">
+  <div class="col-lg-4">
 <h2> Group Information</h2>
 <div> Group Name: <%= @group.name %> </div>
 
 <div> Group id: <%= @group.id %> </div>
 <div> Class course: <%= @group.course_id %> </div>
 <br>
-<h2> Group Messages</h2>
-<% @messages.each do |msg| %>
-<div> <%= msg.content %> </div>
-<% end %>
-<br>
+</div>
+
+  <div class="col-lg-4">
 <h2>Creator Information </h2>
 <div>  </div>
 <div> Username: <%= @group.creator_username %> </div>
 <div> Name : <%= @group.creator_firstname + " " + @group.creator_lastname %> </div>
 <div> ID: <%= @group.creator_id %> </div>
-<br>
-<h2> Member List:  </h2>
-<% @group.members.each do |mem|%>
-<div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div>
-<% end %>
+</div>
+</div>
+
+<h2> Group Messages</h2>
+      <div>
+      <% @messages.first(3).each do |msg| %>
+        <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+        <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+        <p style="font-size:10px"> At: <%= msg.time %> </p>
+        </div>
+      <% end %>
+    </div>
 
 
-<h2> Invite Member List:  </h2>
-<% @all_members.each do |mem|%>
-<div> Name: <%= mem['first_name'].to_s + " " + mem['last_name'].to_s %> <%= link_to "Invite", group_invitation_path(:meeting_id => @group.id, :user_id => mem, :course_id => @group.course_id )%></div> 
+<br>
+<%= form_tag("/groups/send_message", method: "get") do %>
+  <h3> <%= label_tag(:content, "Type Your Message Here") %> </h3>
+<div class="alert alert-success" role="alert"> 
+  <div class="row">
+  <div class="col-lg-6">
+    <div class="input-group">
+      <input type="text" name="content" id="content" class="form-control" placeholder="Search for...">
+      <span class="input-group-btn">
+<!--         <button class="btn btn-default" type="button">Go!</button> -->
+
+        <input class="btn btn-default" type="submit" name="commit" value="Post" data-disable-with="Post">
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->
+</div><!-- /.row -->
+  <%= hidden_field_tag(:course_id, @group.course_id ) %>
+  <%= hidden_field_tag(:id, @group.id ) %>
+  </div>
 <% end %>
 <br>
+
+
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">Messages</a></li>
+  <li><a data-toggle="tab" href="#menu1">Members</a></li>
+  <li><a data-toggle="tab" href="#menu2">Invite new Members</a></li>
+</ul>
+<div class="tab-content">
+	<div id="home" class="tab-pane fade">
+	    <h3>Messages</h3>
+	    <div class="container">       
+	      <div class="table-responsive">
+	            <tr>
+	                <div>
+	                <% @messages.first(15).each do |msg| %>
+	                  <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+	                  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+	                  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	                  </div>
+	                <% end %>
+	              </div>
+	            </tr>
+	    </div>
+	    </div>
+	</div>  
+
+	<div id="menu2" class="tab-pane fade">
+	    <h3>Members not in Group</h3>
+
+	   		<div class="container">       
+	      <div class="table-responsive">
+	      <table class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>First name</th>
+	            <th>Last name</th>
+	            <th>UserName</th>
+	            <th>Action</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <% @group.members.each do |mems| %>
+	            <tr>
+	              <td> <%= $user_cache[mems]["first_name"]%> </td>
+	              <td><%= $user_cache[mems]["last_name"]%> </td>
+	              <td><%= $user_cache[mems]["email"]%> </td>
+	              <td><%= link_to "Invite", group_invitation_path(:meeting_id => @group.id, :user_id => mems, :course_id => @group.course_id )%> </td>
+	            </tr>
+	          <%end%>
+	        </tbody>
+	      </table>
+	    </div>
+	    </div>
+	</div>
+
+	<div id="menu1" class="tab-pane fade">
+	    <h3>Members</h3>
+	    <div class="container">       
+	      <div class="table-responsive">
+	      <table class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>First name</th>
+	            <th>Last name</th>
+	            <th>UserName</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <% @group.members.each do |mems| %>
+	            <tr>
+	              <td> <%= $user_cache[mems]["first_name"]%> </td>
+	              <td><%= $user_cache[mems]["last_name"]%> </td>
+	              <td><%= $user_cache[mems]["email"]%> </td>
+	            </tr>
+	          <%end%>
+	        </tbody>
+	      </table>
+	    </div>
+	    </div>
+	</div> 
+</div>
+
 
 
 <br>
@@ -39,3 +148,22 @@
 <% if (@group.creator_id.to_s == $user_id) %> 
 | <%= link_to 'Delete', group_delete_path(:id => @group.id, :course_id => @group.course_id) %>
 <% end %>
+
+<script type="text/javascript">
+
+  $(".tab").on('click', function(e){
+    
+    e.preventDefault()
+    
+    $(".active").removeClass("active")
+    
+    $(this).addClass("active")
+    
+    $(".inner-formdiv").hide()
+    
+    console.log("#" + $(this).attr("target"))
+    
+    $("#" + $(this).attr("target")).show()
+  })
+
+</script>

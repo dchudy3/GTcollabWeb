@@ -19,11 +19,14 @@
     <div style="clear:both;">
     </div>
 </div>
-
-    <div> MSGS
+    <br>
       <div>
-      <% @messages.each do |msg| %>
-        <div> <%= msg.content %></div>
+      <% @messages.first(3).each do |msg| %>
+        <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+        <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+        <p style="font-size:10px"> At: <%= msg.time %> </p>
+        </div>
       <% end %>
     </div>
 
@@ -31,6 +34,7 @@
   <li class="active"><a data-toggle="tab" href="#home">Groups</a></li>
   <li><a data-toggle="tab" href="#menu1">Meetings</a></li>
   <li><a data-toggle="tab" href="#menu2">Members</a></li>
+  <li><a data-toggle="tab" href="#menu3">Messages</a></li>
 </ul>
 
 <div class="tab-content">
@@ -95,7 +99,7 @@
                         <td>
                           <div class="pre-scrollable"> 
                           <% group[1]["members"].each do |mem|%>
-                            <h5><%= "John" + mem.to_s + " Smith" + mem.to_s %></h5>
+                            <h5><%= $user_cache[mem]["first_name"] + $user_cache[mem]["last_name"] %></h5>
                           <% end %>
                           </div>
                         </td>
@@ -174,7 +178,7 @@
                         <td>
                           <div class="pre-scrollable"> 
                           <% meeting[1]["members"].each do |mem|%>
-                            <h5><%= mem.to_s%></h5>
+                            <h5><%= $user_cache[mem]["first_name"] + $user_cache[mem]["last_name"] %></h5>
                           <% end %>
                           </div>
                         </td>
@@ -227,6 +231,27 @@
     </div>
     </div>
 </div>  
+
+<div id="menu3" class="tab-pane fade">
+    <h3>MEssages</h3>
+    <div class="container">       
+      <div class="table-responsive">
+            <tr>
+                <div>
+                <% @messages.each do |msg| %>
+                  <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+                  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+                  <p style="font-size:10px"> At: <%= msg.time %> </p>
+                  </div>
+                <% end %>
+              </div>
+            </tr>
+    </div>
+    </div>
+</div>  
+
+
 </div>
 
 <!--=================== Group =======================--> 

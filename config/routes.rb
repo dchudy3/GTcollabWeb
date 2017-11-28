@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 	post '/groups', to: "groups#editGroup"
 	post '/groups/:id', to: "groups#joinGroup"
 
+	get '/groups/send_message', to: "groups#send_message" , as: 'send_group_message' 
+
 
 	post '/courses/:id', to: "courses#new"
 
@@ -28,6 +30,8 @@ Rails.application.routes.draw do
 
 	get '/meetings/delete', to: "meetings#delete" , as: 'meeting_delete' 
 	get '/meetings/send_invitation', to: "meetings#send_invitation" , as: 'meeting_invitation' 
+	
+
 
 	post '/meetings/create', to: "meetings#newMeeting"
 	post '/meetings', to: "meetings#editMeeting"
