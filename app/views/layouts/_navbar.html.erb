@@ -54,7 +54,7 @@
 
                        <%= link_to(notification_path()) do %>
                         <button type="button" class="btn btn-default btn-sm">
-                            <span class="glyphicon glyphicon-bell" aria-hidden="true"><%= @num_alerts != nil ? @num_alerts : 0 %></span>
+                            <span class="glyphicon glyphicon-bell" aria-hidden="true"><%= @num_alerts == nil ? @num_alerts.to_s : ""%></span>
                         </button>
                       <% end %>
                     </ul>
