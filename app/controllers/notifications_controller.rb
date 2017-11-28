@@ -10,7 +10,7 @@ class NotificationsController < ApplicationController
     @meeting_messages = Array.new
     @meeting_message = Message.new
 
-  	response = RestClient.get 'https://gtcollab.herokuapp.com/api/standard-notifications?recipients=13', {authorization: $token}
+  	response = RestClient.get 'https://gtcollab.herokuapp.com/api/standard-notifications?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     p " DAN ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
@@ -24,7 +24,7 @@ class NotificationsController < ApplicationController
         @standard_messages << @standard_message
     end
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-notifications', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-notifications?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     p " DAN ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
@@ -40,7 +40,7 @@ class NotificationsController < ApplicationController
     end
     p objArray
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-notifications', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-notifications?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |noti|
@@ -55,7 +55,7 @@ class NotificationsController < ApplicationController
     end
 
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-invitations', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-invitations?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
     objArray["results"].each do |noti|
         @group_message = Message.new
@@ -69,7 +69,7 @@ class NotificationsController < ApplicationController
     end
 
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-invitations', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-invitations?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     objArray["results"].each do |noti|
@@ -84,14 +84,14 @@ class NotificationsController < ApplicationController
     end
 
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-proposals', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-proposals?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     p " DAN ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
     p objArray
 
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-proposal-results', {authorization: $token}
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/meeting-proposal-results?recipients=' + $user_id, {authorization: $token}
     objArray = JSON.parse(response.body)
 
     p " DAN ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
