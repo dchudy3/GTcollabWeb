@@ -23,11 +23,12 @@
         <% end %>
       </ul>
     </div>           
-    <div id = "member-list"></div>
+    <div id = "member-list">
+<!--      text_field_tag :member, "", class: "hidden-member", style: "display:none;"   -->
 
-    <%= text_field_tag 'member', "", class: "hidden-member", style: "display:none;"  %>
 
-    <%= f.submit "Create", class: "btn btn-primary submit-btn" %>
+    </div>
+    <%= f.submit "Create", id: "check", class: "btn btn-primary submit-btn" %>
 <% end %>
 
 <script>
@@ -37,11 +38,15 @@
     
   });
       $(".member-dd-item").on("click", function(e){
-    
     e.stopPropagation();
     e.preventDefault();
+
     var text = $(this).text();
     var val = $(this).attr("value");
+
+
+    //console.log(val)
+    //console.log(text)
     if(text == "Select Assignee"){
       return
     }
@@ -50,6 +55,8 @@
         + "<p style = 'margin:0px; padding-right:15px'>" + text + "</p>" + 
        "<span class = 'glyphicon glyphicon-remove remove-member remove-item' style='margin:2px; float:right;'>" +"</span>" + 
        " </div>"
+
+       + "<input value='" + val + "' type='hidden' name='group[member_" + val  +  "]' id='member_" + val + "'>"
     $("#member-list").html(html);
     $(".remove-member").on("click", function(){
       $(this).closest(".member-item").detach()

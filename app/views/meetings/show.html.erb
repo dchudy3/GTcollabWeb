@@ -24,9 +24,18 @@
 <br>
 <h2> Member List:  </h2>
 <% @meeting.members.each do |mem|%>
-<div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div>
+<div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div> 
+<% end %>
+
+<h2> Invite Member List:  </h2>
+<% @all_members.each do |mem|%>
+<div> Name: <%= mem['first_name'].to_s + " " + mem['last_name'].to_s %> <%= link_to "Invite", meeting_invitation_path(:meeting_id => @meeting.id, :user_id => mem, :course_id => @meeting.course_id )%></div> 
 <% end %>
 <br>
 
 <%= link_to 'Edit', edit_meeting_path(@meeting.id) %> |
 <%= link_to 'Back', course_path(@meeting.course_id) %>
+
+<% if (@meeting.creator_id.to_s == $user_id) %> 
+| <%= link_to 'Delete', meeting_delete_path(:id => @meeting.id, :course_id => @meeting.course_id) %>
+<% end %>

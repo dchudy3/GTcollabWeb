@@ -21,25 +21,40 @@ class CoursesController < ApplicationController
   # }
 
   def index
+    # this will need to loop to find full page of options
     @courses = Hash.new
     @mycourses = Hash.new
 
     @mygroups = Hash.new
     @mymeetings = Hash.new
     course_id = ""
+    next_page = 'https://gtcollab.herokuapp.com/api/courses?subject__term=1'
 
-    response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1', {authorization: $token}
-    objArray = JSON.parse(response.body)
+    if $all_courses == nil
+      while next_page != nil
+        p next_page
+        response = RestClient.get next_page, {authorization: $token}
+        objArray = JSON.parse(response.body)
 
-    objArray["results"].each do |result|
-      course = Course.new
-      course.name = result["name"]
-      course.id = result["id"]
-      course.course_number = result["course_number"]
-      course.joined = false
-      hash = course.as_json
-      @courses[hash["id"]] = hash
+        next_page = objArray["next"] 
+        # p "DAN|||||||||||||||||||| " 
+        # p objArray["next"]
+        objArray["results"].each do |result|
+          course = Course.new
+          course.name = result["name"]
+          course.id = result["id"]
+          course.course_number = result["course_number"]
+          course.joined = false
+          hash = course.as_json
+          @courses[hash["id"]] = hash
+        end
+      end
+       $all_courses = @courses
+    else 
+      @courses =  $all_courses
     end
+
+   
 
     ## Get users specifc classes
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/courses?subject__term=1&members=' + $user_id, {authorization: $token}
@@ -135,6 +150,20 @@ class CoursesController < ApplicationController
     @course = Course.new
     @course.id = params[:id]
     @course.name = params[:name]
+
+
+    @messages = Array.new
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/course-messages/?course=' + @course.id, {authorization: $token}
+    objArray = JSON.parse(response.body)
+    objArray['results'].each do |msg|
+      message = Message.new
+      message.content = msg['content']
+      message.time = msg['timestamp']
+      message.creator = msg['creator']['username']
+      message.creator_id = msg['creator']['id']
+      @messages << message
+    end
+
 
 
     #Getting course members

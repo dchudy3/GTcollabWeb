@@ -1,6 +1,6 @@
 class MeetingsController < ApplicationController
   before_action :set_meeting, only: [:show, :edit, :update, :destroy]
-  skip_before_action :verify_authenticity_token, :only => [:joinMeeting, :createMeeting]
+  skip_before_action :verify_authenticity_token, :only => [:newMeeting, :joinMeeting, :createMeeting]
   # GET /meetings
   # GET /meetings.json
   def index
@@ -56,6 +56,24 @@ class MeetingsController < ApplicationController
       members << member
     end
     @meeting.members = members
+
+
+### ALL members. ie not yet been invited
+
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/users/?courses_as_member=' + @meeting.course_id.to_s , {authorization: $token}
+    objArray = JSON.parse(response.body)
+    #p "COUNTTT"
+    #p objArray["count"]
+    @count = objArray["count"].to_s
+
+    mem_list = Array.new
+
+    objArray["results"].each do |member|
+      mem_list << member
+    end
+    @all_members = mem_list
+
+#####
   end
 
   # GET /meetings/new
@@ -70,17 +88,67 @@ class MeetingsController < ApplicationController
   # POST /meetings
   # POST /meetings.json
   def newMeeting
-    @meeting = Meeting.new(meeting_params)
+    #@meeting = Meeting.new(meeting_params)
+    p params
+    p 'CREATE MAGIC--------------------'
+    p meeting_params
+    pass = true
 
-    respond_to do |format|
-      if @meeting.save
-        format.html { redirect_to @meeting, notice: 'Meeting was successfully created.' }
-        format.json { render :show, status: :created, location: @meeting }
-      else
-        format.html { render :new }
-        format.json { render json: @meeting.errors, status: :unprocessable_entity }
+    course_id = meeting_params[:course_id]
+    name = meeting_params[:name]
+    location = meeting_params[:location]
+    description = meeting_params[:description]
+    start_date = meeting_params[:start_date]
+    start_time = meeting_params[:start_time]
+    duration_minutes = meeting_params[:duration_minutes]
+
+    p name
+    p course_id
+
+    p start_date
+    start_date.gsub! '/', '-'
+    p start_date
+    members = Array.new
+    meeting_params.keys.each do |key|
+      if key.include?('member')
+        members << meeting_params[key]
+        meeting_params.delete(key) 
       end
+      #p key
+    end 
+    p members
+    begin
+    p "are we ok?"
+    response = RestClient.post 'https://gtcollab.herokuapp.com/api/meetings/', { :name => name, course: course_id, :location => location,
+    :description => description, :start_date  => start_date, :start_time => start_time, :duration_minutes => duration_minutes, members: members }, {authorization: $token}
+    
+    p "are we ok?"
+    objArray = JSON.parse(response.body)
+    p objArray
+    p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response.body
     end
+
+    #puts response.body
+    # IF success
+    # group_path(id) ##### NEEDS TO BE CREATED FIRST
+    # else
+    redirect_to course_path(:id => course_id)
+    # end
+
+
+  #   respond_to do |format|
+  #     if @meeting.save
+  #       format.html { redirect_to @meeting, notice: 'Meeting was successfully created.' }
+  #       format.json { render :show, status: :created, location: @meeting }
+  #     else
+  #       format.html { render :new }
+  #       format.json { render json: @meeting.errors, status: :unprocessable_entity }
+  #     end
+  #   end
   end
 
   # PATCH/PUT /meetings/1
@@ -99,6 +167,31 @@ class MeetingsController < ApplicationController
 
   # DELETE /meetings/1
   # DELETE /meetings/1.json
+
+  def delete
+   p "WE IN DELETE"
+
+   p params[:id] 
+
+
+    begin
+      p "are we ok?"
+      # will need to change to full delete
+      response = RestClient.delete "https://gtcollab.herokuapp.com/api/meetings/" + params[:id], {authorization: $token}
+      
+      p "are we ok?"
+      objArray = JSON.parse(response.body)
+      p objArray
+      p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response
+      p e.response.body
+    end
+
+   redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+  end
   def destroy
     require "net/http"
     require "uri"
@@ -148,6 +241,35 @@ class MeetingsController < ApplicationController
     #puts response.body
     redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
   end
+
+  def send_invitation
+    p "HELLO?"
+    p params
+    course = params[:course_id]
+    group = params[:meeting_id]
+    recipent = params[:user_id][:id]
+    p course
+    p group
+    p recipent
+    begin
+      p "are we ok?"
+      # will need to change to full delete
+      response = RestClient.post "https://gtcollab.herokuapp.com/api/meeting-invitations/", {:meeting => group, :recipients => recipent} ,{authorization: $token}
+      
+      p "are we ok?"
+      objArray = JSON.parse(response.body)
+      p objArray
+      p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response
+      p e.response.body
+    end
+
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_meeting
@@ -156,6 +278,6 @@ class MeetingsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def meeting_params
-      params.require(:meeting).permit(:name, :email, :course_id, :creator_id, :creator_username, :creator_firstname, :creator_lastname, :creator_email, :members)
+      params.require(:meeting).permit! #(:name, :email, :course_id, :creator_id, :creator_username, :creator_firstname, :creator_lastname, :creator_email, :members)
     end
 end

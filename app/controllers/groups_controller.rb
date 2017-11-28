@@ -13,9 +13,23 @@ class GroupsController < ApplicationController
     #p "IN GROUP SHOW !!!!!"
     @id = params[:id]
     #p @id
+    @messages = Array.new
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/group-messages/?group=' + @id , {authorization: $token}
+    objArray = JSON.parse(response.body)
+    p " DAN!"
+    objArray['results'].each do |msg|
+      message = Message.new
+      message.content = msg['content']
+      message.time = msg['timestamp']
+      message.creator = msg['creator']['username']
+      message.creator_id = msg['creator']['id']
+      @messages << message
+    end
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/groups/' + @id , {authorization: $token}
     objArray = JSON.parse(response.body)
+    p "dd ||||||"
+    p objArray
     members = Array.new
     @group = Group.new
     @group.id = objArray["id"]
@@ -31,6 +45,21 @@ class GroupsController < ApplicationController
       members << member
     end
     @group.members = members
+
+
+    response = RestClient.get 'https://gtcollab.herokuapp.com/api/users/?courses_as_member=' + @group.course_id.to_s , {authorization: $token}
+    objArray = JSON.parse(response.body)
+    #p "COUNTTT"
+    #p objArray["count"]
+    @count = objArray["count"].to_s
+
+    mem_list = Array.new
+
+    objArray["results"].each do |member|
+      mem_list << member
+    end
+    @all_members = mem_list
+
       #hash = group.as_json
       #@mymeetings[hash["id"]] = hash
   end
@@ -88,20 +117,54 @@ class GroupsController < ApplicationController
   def newGroup
     p 'CREATE MAGIC--------------------'
     p group_params
-    @group = Group.new(group_params)
+    pass = true
 
-    respond_to do |format|
-      if @group.save
-        format.html { redirect_to @group, notice: 'Group was successfully created.' }
-        format.json { render :show, status: :created, location: @group }
-      else
-        format.html { render :new }
-        format.json { render json: @group.errors, status: :unprocessable_entity }
+    course_id = group_params[:course_id]
+    name = group_params[:name]
+    p name
+    p course_id
+    members = Array.new
+    group_params.keys.each do |key|
+      if key.include?('member')
+        p 'MEMBER!:'
+        members << group_params[key]
+        group_params.delete(key) 
       end
+      #p key
+    end 
+
+    p members
+
+    #@group = Group.new(group_params)
+    begin
+    p "are we ok?"
+    response = RestClient.post 'https://gtcollab.herokuapp.com/api/groups/', { :name => name, course: course_id, members: members } , {authorization: $token}
+        p "are we ok?"
+    objArray = JSON.parse(response.body)
+    p objArray
+    p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response.body
     end
 
+    # respond_to do |format|
+    #   if @group.save
+    #     format.html { redirect_to @group, notice: 'Group was successfully created.' }
+    #     format.json { render :show, status: :created, location: @group }
+    #   else
+    #     format.html { render :new }
+    #     format.json { render json: @group.errors, status: :unprocessable_entity }
+    #   end
+    # end
+
     #puts response.body
-    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+    # IF success
+    # group_path(id) ##### NEEDS TO BE CREATED FIRST
+    # else
+    redirect_to course_path(:id => course_id)
+    # end
   end
   
   #Group Controller
@@ -158,6 +221,58 @@ class GroupsController < ApplicationController
   # DELETE /groups/1.json
   #Groups Controller 
   #Leave Group
+
+  def send_invitation
+    p "HELLO?"
+    p params
+    course = params[:course_id]
+    group = params[:meeting_id]
+    recipent = params[:user_id][:id]
+    p course
+    p group
+    p recipent
+    begin
+      p "are we ok?"
+      # will need to change to full delete
+      response = RestClient.post "https://gtcollab.herokuapp.com/api/group-invitations/", {:course => course, :group => recipent} ,{authorization: $token}
+      
+      p "are we ok?"
+      objArray = JSON.parse(response.body)
+      p objArray
+      p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response
+      p e.response.body
+    end
+
+    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+  end
+
+  def delete
+   p "WE IN DELETE"
+
+   p params 
+    begin
+      p "are we ok?"
+      # will need to change to full delete
+      response = RestClient.post "https://gtcollab.herokuapp.com/api/groups/" + params[:id] + "/leave/", {} ,{authorization: $token}
+      
+      p "are we ok?"
+      objArray = JSON.parse(response.body)
+      p objArray
+      p "are we ok?"
+
+    rescue => e
+      p "are we not ok?"
+      p e.response
+      p e.response.body
+    end
+
+   redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+  end
+
   def destroy
     require "net/http"
     require "uri"
@@ -186,6 +301,7 @@ class GroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
-      params.require(:group).permit(:name, :email, :course_id, :creator_id, :creator_username, :creator_firstname, :creator_lastname, :creator_email, :members)
+      params.require(:group).permit!
+      #params.require(:group).permit(:name, :email, :course_id, :creator_id, :creator_username, :creator_firstname, :creator_lastname, :creator_email, :members)
     end
 end

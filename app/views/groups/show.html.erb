@@ -9,7 +9,9 @@
 <div> Class course: <%= @group.course_id %> </div>
 <br>
 <h2> Group Messages</h2>
-<div>empty</div>
+<% @messages.each do |msg| %>
+<div> <%= msg.content %> </div>
+<% end %>
 <br>
 <h2>Creator Information </h2>
 <div>  </div>
@@ -21,6 +23,19 @@
 <% @group.members.each do |mem|%>
 <div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div>
 <% end %>
+
+
+<h2> Invite Member List:  </h2>
+<% @all_members.each do |mem|%>
+<div> Name: <%= mem['first_name'].to_s + " " + mem['last_name'].to_s %> <%= link_to "Invite", group_invitation_path(:meeting_id => @group.id, :user_id => mem, :course_id => @group.course_id )%></div> 
+<% end %>
+<br>
+
+
 <br>
 <%= link_to 'Edit', edit_group_path(@group.id) %> |
 <%= link_to 'Back', course_path(@group.course_id) %>
+
+<% if (@group.creator_id.to_s == $user_id) %> 
+| <%= link_to 'Delete', group_delete_path(:id => @group.id, :course_id => @group.course_id) %>
+<% end %>

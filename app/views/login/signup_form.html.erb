@@ -1,0 +1,40 @@
+<% provide(:title, "Log in") %>
+<h1>Signup!!!</h1>
+
+  <% if flash[:notice] %>
+    <div class="notice"><%= flash[:notice] %></div>
+  <% end %>
+
+<div class="row">
+  <div class="col-md-6 col-md-offset-3">
+
+    <%= form_tag("signup", method: "get") do %>
+		<%= label_tag "Username"%>
+		<%= text_field_tag :username, "", class: 'form-control' %>
+		
+		<%= label_tag "retype Username"%>
+		<%= text_field_tag :username_re, "", class: 'form-control' %>
+<br>
+
+		<%= label_tag "Password" %>
+		<%= password_field_tag :password , "", class: 'form-control'%>
+
+		<%= label_tag "retype Password" %>
+		<%= password_field_tag :password_re , "", class: 'form-control'%>
+
+<br>
+		<%= label_tag "first name" %>
+		<%= text_field_tag :first_name , "", class: 'form-control'%>
+
+		<%= label_tag "last name" %>
+		<%= text_field_tag :last_name , "", class: 'form-control'%>
+
+		<%= label_tag "email" %>
+		<%= text_field_tag :email , "", class: 'form-control'%>
+
+<br>
+
+		<%= submit_tag :signup, class: "btn btn-primary"%>
+	<% end %>
+  </div>
+</div>

@@ -71,6 +71,7 @@
         + "<p style = 'margin:0px; padding-right:15px'>" + text + "</p>" + 
        "<span class = 'glyphicon glyphicon-remove remove-member1 remove-item' style='margin:2px; float:right;'>" +"</span>" + 
        " </div>"
+       + "<input value='" + val + "' type='hidden' name='meeting[member_" + val  +  "]' id='member_" + val + "'>"
     $("#member1-list").html(html);
     $(".remove-member1").on("click", function(){
       $(this).closest(".member1-item").detach()
