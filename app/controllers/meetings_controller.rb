@@ -69,7 +69,14 @@ class MeetingsController < ApplicationController
     mem_list = Array.new
 
     objArray["results"].each do |member|
-      mem_list << member
+      if members.include? member["id"].to_i
+        p member["id"].to_i
+        p "is a memeber <-"
+      else
+        p member["id"].to_i
+        p "not a memeber <-"
+        mem_list << member
+      end
     end
     @all_members = mem_list
 

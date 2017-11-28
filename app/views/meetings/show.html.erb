@@ -1,15 +1,15 @@
 <p id="notice"><%= notice %></p>
 
-
-
+<br>
 <h2> Group</h2>
-<div> Name: <%= @meeting.name %> </div>
+<h3> Name: <%= @meeting.name %> </h3>
 <div> Id: <%= @meeting.id %> </div>
+
 <br>
-<h2> Meeting Annoucement</h2>
-<div>empty</div>
-<br>
-<h2> Group</h2>
+
+  <div class="row">
+  <div class="col-lg-4">
+<h2> Group Information</h2>
 <div> ID: <%= @meeting.course_id %> </div>
 <div> Location: <%= @meeting.location %> </div>
 <div> Description: <%= @meeting.description %> </div>
@@ -17,25 +17,120 @@
 <div> Start Time: <%= @meeting.start_time %> </div>
 <div> Duration: <%= @meeting.duration %> </div>
 <br>
-<h2>Creator </h2>
+</div>
+
+  <div class="col-lg-4">
+<h2>Creator Information </h2>
+<div>  </div>
 <div> Username: <%= @meeting.creator_username %> </div>
 <div> Name: <%= @meeting.creator_firstname + " " + @meeting.creator_lastname %> </div>
 <div> ID: <%= @meeting.creator_id %> </div>
-<br>
-<h2> Member List:  </h2>
-<% @meeting.members.each do |mem|%>
-<div> Name: <%= "John" + mem.to_s + " Smith" + mem.to_s %></div> 
-<% end %>
+</div>
+</div>
 
-<h2> Invite Member List:  </h2>
-<% @all_members.each do |mem|%>
-<div> Name: <%= mem['first_name'].to_s + " " + mem['last_name'].to_s %> <%= link_to "Invite", meeting_invitation_path(:meeting_id => @meeting.id, :user_id => mem, :course_id => @meeting.course_id )%></div> 
-<% end %>
-<br>
 
+
+
+
+<ul class="nav nav-tabs">
+  <li><a data-toggle="tab" href="#home">Invite new Members</a></li>
+  <li><a data-toggle="tab" href="#menu1">Members</a></li>
+</ul>
+<div class="tab-content">
+	<div id="home" class="tab-pane fade">
+	    <h3>Members not in Group</h3>
+
+	   		<div class="container">       
+	      <div class="table-responsive">
+	      <table class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>First name</th>
+	            <th>Last name</th>
+	            <th>UserName</th>
+	            <th>Action</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <% @all_members.each do |mems| %>
+	            <tr>
+	             <% if ($user_cache.key?(mems)) %>
+	              <td> <%= $user_cache[mems]["first_name"]%> </td>
+	              <td><%= $user_cache[mems]["last_name"]%> </td>
+	              <td><%= $user_cache[mems]["email"]%> </td>
+	            <% else %>
+	              <td> <%= mems["first_name"]%> </td>
+	              <td><%= mems["last_name"]%> </td>
+	              <td><%= mems["email"] %> </td>
+	            <% end %>
+	              <td><%= link_to "Invite", meeting_invitation_path(:meeting_id => @meeting.id, :user_id => mems, :course_id => @meeting.course_id, :group_id => @meeting.id )%> </td>
+	            </tr>
+	          <%end%>
+	        </tbody>
+	      </table>
+	    </div>
+	    </div>
+	</div>
+
+	<div id="menu1" class="tab-pane fade">
+	    <h3>Members</h3>
+	    <div class="container">       
+	      <div class="table-responsive">
+	      <table class="table table-hover">
+	        <thead>
+	          <tr>
+	            <th>First name</th>
+	            <th>Last name</th>
+	            <th>UserName</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <% @meeting.members.each do |mems| %>
+	            <tr>
+	             <% if ($user_cache.key?(mems)) %>
+	              <td> <%= $user_cache[mems]["first_name"]%> </td>
+	              <td><%= $user_cache[mems]["last_name"]%> </td>
+	              <td><%= $user_cache[mems]["email"]%> </td>
+	            <% else %>
+	              <td> <%= mems%> </td>
+	              <td><%= mems%> </td>
+	              <td><%= mems %> </td>
+	            <% end %>
+	            </tr>
+	          <%end%>
+	        </tbody>
+	      </table>
+	    </div>
+	    </div>
+	</div> 
+</div>
+
+
+
+<br>
 <%= link_to 'Edit', edit_meeting_path(@meeting.id) %> |
 <%= link_to 'Back', course_path(@meeting.course_id) %>
 
 <% if (@meeting.creator_id.to_s == $user_id) %> 
 | <%= link_to 'Delete', meeting_delete_path(:id => @meeting.id, :course_id => @meeting.course_id) %>
 <% end %>
+
+<script type="text/javascript">
+
+  $(".tab").on('click', function(e){
+    
+    e.preventDefault()
+    
+    $(".active").removeClass("active")
+    
+    $(this).addClass("active")
+    
+    $(".inner-formdiv").hide()
+    
+    console.log("#" + $(this).attr("target"))
+    
+    $("#" + $(this).attr("target")).show()
+  })
+
+</script>
+

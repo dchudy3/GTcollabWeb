@@ -27,9 +27,13 @@
       <div>
       <% @messages.first(3).each do |msg| %>
         <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
-
-        <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
-        <p style="font-size:10px"> At: <%= msg.time %> </p>
+	                  <% if ($user_cache.key?(msg.creator_id)) %>
+	                  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+	                  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	                  <% else %>
+	                  	<p style="font-size:10px"> From <%= msg.creator_id%> </p>
+	                  	<p style="font-size:10px"> At: <%= msg.time %> </p>
+	                  <% end %>
         </div>
       <% end %>
     </div>
@@ -72,9 +76,13 @@
 	                <div>
 	                <% @messages.first(15).each do |msg| %>
 	                  <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
-
+	                  <% if ($user_cache.key?(msg.creator_id)) %>
 	                  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
 	                  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	                  <% else %>
+	                  	<p style="font-size:10px"> From <%= msg.creator_id%> </p>
+	                  	<p style="font-size:10px"> At: <%= msg.time %> </p>
+	                  <% end %>
 	                  </div>
 	                <% end %>
 	              </div>
@@ -98,12 +106,18 @@
 	          </tr>
 	        </thead>
 	        <tbody>
-	          <% @group.members.each do |mems| %>
+	          <% @all_members.each do |mems| %>
 	            <tr>
+	             <% if ($user_cache.key?(mems)) %>
 	              <td> <%= $user_cache[mems]["first_name"]%> </td>
 	              <td><%= $user_cache[mems]["last_name"]%> </td>
 	              <td><%= $user_cache[mems]["email"]%> </td>
-	              <td><%= link_to "Invite", group_invitation_path(:meeting_id => @group.id, :user_id => mems, :course_id => @group.course_id )%> </td>
+	            <% else %>
+	              <td> <%= mems["first_name"]%> </td>
+	              <td><%= mems["last_name"]%> </td>
+	              <td><%= mems["email"] %> </td>
+	            <% end %>
+	              <td><%= link_to "Invite", group_invitation_path(:meeting_id => @group.id, :user_id => mems, :course_id => @group.course_id, :group_id => @group.id )%> </td>
 	            </tr>
 	          <%end%>
 	        </tbody>
@@ -127,9 +141,16 @@
 	        <tbody>
 	          <% @group.members.each do |mems| %>
 	            <tr>
+	             <% if ($user_cache.key?(mems)) %>
 	              <td> <%= $user_cache[mems]["first_name"]%> </td>
 	              <td><%= $user_cache[mems]["last_name"]%> </td>
 	              <td><%= $user_cache[mems]["email"]%> </td>
+	            <% else %>
+	              <td> <%= mems%> </td>
+	              <td><%= mems%> </td>
+	              <td><%= mems %> </td>
+	            <% end %>
+	              <td><%= link_to "Invite", group_invitation_path(:meeting_id => @group.id, :user_id => mems, :course_id => @group.course_id, :group_id => @group.id )%> </td>
 	            </tr>
 	          <%end%>
 	        </tbody>

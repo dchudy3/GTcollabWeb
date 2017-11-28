@@ -93,6 +93,8 @@ class LoginController < ApplicationController
 	    	objArray = JSON.parse(response.body)
 	    	#p "LOG IN!!!!!!!!"
 	    	#p objArray
+	    	$user_cache = Hash.new
+	    	
 	    	$user_id = objArray["results"][0]["id"].to_s
 	    	$user_name = objArray["results"][0]["username"].to_s
 	    	$user_first = objArray["results"][0]["first_name"].to_s

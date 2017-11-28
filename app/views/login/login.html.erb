@@ -1,9 +1,9 @@
 <% provide(:title, "Log in") %>
 <h1>Log in</h1>
 
-  <% if flash[:notice] %>
-    <div class="notice"><%= flash[:notice] %></div>
-  <% end %>
+<!--   <% if flash[:notice] %>
+    <div class="notice"> flash[:notice] %></div>
+  <% end %> -->
 
 <div class="row">
   <div class="col-md-6 col-md-offset-3">
@@ -14,7 +14,7 @@
 		
 		<%= label_tag "Password" %>
 		<%= password_field_tag :password , "", class: 'form-control'%>
-
+		<br>
 		<%= submit_tag :login, class: "btn btn-primary"%>
 	<% end %>
 

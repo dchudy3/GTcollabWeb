@@ -183,7 +183,6 @@ class CoursesController < ApplicationController
     objArray = JSON.parse(response.body)
     #p "COUNTTT"
     #p objArray["count"]
-    $user_cache = Hash.new
     @count = objArray["count"].to_s
 
     mem_list = Array.new

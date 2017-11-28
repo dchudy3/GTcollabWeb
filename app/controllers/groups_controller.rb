@@ -60,10 +60,10 @@ class GroupsController < ApplicationController
       p member["id"].to_i
       if members.include? member["id"].to_i
         p member["id"].to_i
-        p "not in memeber <-"
+        p "is a memeber <-"
       else
         p member["id"].to_i
-        p "in memeber <-"
+        p "not a memeber <-"
         mem_list << member
       end
     end
@@ -277,7 +277,7 @@ class GroupsController < ApplicationController
       p e.response.body
     end
 
-    redirect_to group_path(params[:group_id], :name => params[:name], :joined => params[:joined])
+    redirect_to group_path(params[:group_id])
   end
 
   def delete

@@ -1,2 +1,47 @@
-<h1>Notifications#show</h1>
-<p>Find me in app/views/notifications/show.html.erb</p>
+<h1>Show All My Notifications</h1>
+
+<h3>Standard Messages</h3>
+<% @standard_messages.each do |msg| %>
+  <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+  <% if !($user_cache.key?(msg.creator_id)) %>
+	  <p style="font-size:10px"> From <%= "user_id: " + msg.creator_id.to_s %> </p>
+	  <p style="font-size:10px"> At: <%= msg.time %> </p>
+  <% else %>
+  	  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+	  <p style="font-size:10px"> At: <%= msg.time %> </p>
+  <% end %>
+  </div>
+<% end %>
+
+<h3>Group Messages</h3>
+<% @group_messages.each do |msg| %>
+  <%= link_to(group_path(:id => msg.group_id.to_i)) do %>
+  <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+	  <% if !($user_cache.key?(msg.creator_id)) %>
+		  <p style="font-size:10px"> From <%= "user_id: " + msg.creator_id.to_s %> </p>
+		  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	  <% else %>
+	  	  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+		  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	  <% end %>
+  </div>
+  <% end %>
+<% end %>
+
+<h3>Meeting Messages</h3>
+<% @meeting_messages.each do |msg| %>
+  <%= link_to(meeting_path(:id => msg.group_id.to_i)) do %>
+  <div class="alert alert-success" role="alert"> <h3> <%= msg.content %> </h3>
+
+	  <% if !($user_cache.key?(msg.creator_id)) %>
+		  <p style="font-size:10px"> From <%= "user_id: " + msg.creator_id.to_s %> </p>
+		  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	  <% else %>
+	  	  <p style="font-size:10px"> From <%= $user_cache[msg.creator_id]["first_name"] + " " + $user_cache[msg.creator_id]["last_name"]%> </p>
+		  <p style="font-size:10px"> At: <%= msg.time %> </p>
+	  <% end %>
+  </div>
+  <% end %>
+<% end %>
