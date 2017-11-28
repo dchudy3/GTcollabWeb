@@ -55,7 +55,7 @@
       <thead>
           <tr>
               <th>Group Name</th>
-              <th>Group ID</th>
+              <th>Course Name</th>
               <th>Creator</th>
           </tr>
       </thead>
@@ -65,17 +65,14 @@
       <tbody>
            <% @mygroups.each do |group| %>
               <tr>
-                  <td>
-                      <%= link_to raw("<span class=\"glyphicon glyphicon-user\"></span> #{group[1]["name"]}"), group_path(group[0]), class: "btn btn-info", method: :show %>
+                  <td><%= group[1]["name"] %>
                   </td>
-                  <td>
-                    <h5><%= group[1]["id"] %></h5> 
-                  </td>
+                  <td><%= link_to raw("<span class=\"glyphicon glyphicon-book\"></span> #{group[1]['course_name']}"), course_path(group[1]["course_id"], :name => group[1]["course_name"].to_s, :joined =>group[1]["joined"].to_s), class: "btn btn-info", method: :show %></td>
                   <td>
                     <%= group[1]["creator_firstname"] %> <%= group[1]["creator_lastname"] %>
                   </td>
                   <td>
-                    <%= button_to 'Leave Group', group_path(group[0]),
+                <%= button_to 'Leave Group', group_path(group[0], :course_id => group[1]["course_id"].to_s, :name => group[1]["course_name"].to_s, :joined => group[1]["joined"].to_s, :index => "true"),
                 data: {:confirm => 'Are you sure?'}, class: "btn btn-primary", :method => :delete %>
                 </td>
               </tr>
@@ -93,6 +90,7 @@
       <thead>
           <tr>
               <th>Meeting Name</th>
+              <th>Course Name</th>
               <th>Location</th>
               <th>Description</th>
               <th>Date</th>
@@ -106,16 +104,15 @@
       <tbody>
            <% @mymeetings.each do |meeting| %>
               <tr>
-                  <td>
-                      <%= link_to raw("<span class=\"glyphicon glyphicon-user\"></span> #{meeting[1]["name"]}"), meeting_path(meeting[0]) , class: "btn btn-info", method: :show %>
-                  </td>
+                  <td><%= meeting[1]["name"] %> </td>
+                   <td><%= link_to raw("<span class=\"glyphicon glyphicon-book\"></span> #{meeting[1]['course_name']}"), course_path(meeting[1]["course_id"], :name => meeting[1]["course_name"].to_s, :joined =>meeting[1]["joined"].to_s), class: "btn btn-info", method: :show %></td>
                   <td><%= meeting[1]["location"] %> </td>
                   <td><%= meeting[1]["description"] %> </td>
                   <td><%= meeting[1]["start_date"] %> </td>
                   <td><%= meeting[1]["start_time"] %> </td>
                   <td><%= meeting[1]["duration"] %> </td>
                   <td>
-                    <%= button_to 'Remove Meeting', meeting_path(meeting[0]),
+                    <%= button_to 'Remove Meeting', meeting_path(meeting[0], :course_id => meeting[1]["course_id"].to_s, :name => meeting[1]["course_name"].to_s, :joined => meeting[1]["joined"].to_s, :index => "true"),
                 data: {:confirm => 'Are you sure?'}, class: "btn btn-primary", :method => :delete %>
                 </td>
               </tr>

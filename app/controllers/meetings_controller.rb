@@ -33,7 +33,7 @@ class MeetingsController < ApplicationController
 
     response = RestClient.get 'https://gtcollab.herokuapp.com/api/meetings/' + @id , {authorization: $token}
     objArray = JSON.parse(response.body)
-    p objArray
+
     members = Array.new
     @meeting = Meeting.new
     @meeting.id = objArray["id"]
@@ -198,9 +198,6 @@ class MeetingsController < ApplicationController
 
     id =  params[:id]
     line = "https://gtcollab.herokuapp.com/api/meetings/" + id + "/leave/"
-    puts line
-    puts $token
-
 
     parsed_url = URI.parse(line)
 
@@ -212,11 +209,14 @@ class MeetingsController < ApplicationController
     req.add_field("authorization", $token)
 
     response = http.request(req)
-    redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+    if params[:index].to_s == "true"
+      redirect_to courses_path
+    else
+      redirect_to course_path(params[:course_id], :name => params[:name], :joined => params[:joined])
+    end
   end
 
   def joinMeeting
-    puts params
     id =  params[:id]
     line = "https://gtcollab.herokuapp.com/api/meetings/" + id + "/join/"
     
